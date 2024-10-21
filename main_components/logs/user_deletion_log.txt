@@ -1,0 +1,10 @@
+2024-09-24 16:25:30 - The 'Muhammad Athar Khan' account was deleted successfully by user ID: 96
+2024-09-24 16:27:19 - The 'aaa' account was deleted successfully by user ID: 99
+2024-09-24 16:31:31 - The 'Qadama Ahmed Khan' account was deleted successfully by user ID: 95
+2024-09-24 16:31:31 - This 'Qadama Ahmed Khan' account delelted successfully by : 95
+2024-09-24 16:38:30 - The 'Muhammad Athar Khan' account was deleted successfully by user ID: 96
+2024-09-24 16:41:10 - The 'admin' account was deleted successfully by user ID: 46
+2024-09-24 16:42:03 - The 'aaa' account was deleted successfully by user ID: 100
+2024-09-24 16:43:36 - The 'editors' account was deleted successfully by user ID: 
+2024-09-24 16:44:41 - The 'md' account was deleted successfully by user ID: Maaz
+2024-09-24 16:52:34 - This 'editors' account delelted successfully by : Maaz

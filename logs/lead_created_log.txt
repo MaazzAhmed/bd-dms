@@ -1,0 +1,38 @@
+2024-01-23 17:30:54 - Lead created - Client Name: sda, Client Contact Number: sda, Lead Landing Date: 2024-01-23
+2024-01-24 10:26:27 - Lead created - Client Name: ahmed, Client Contact Number: 32423323223, Lead Landing Date: 2024-01-24
+2024-01-26 15:22:53 - Lead created - Client Name: mf, Client Contact Number: 64532456, Lead Landing Date: 2024-01-26
+
+2024-02-26 16:41:41 - daniii Created The Lead - Client Name: Athar, Client Contact Number: 438342849849, Lead Landing Date: 2024-02-26
+2024-02-28 16:13:48 - daniii Created The Lead - Client Name: sda, Client Contact Number: 04350450432, Lead Landing Date: 2024-02-28
+2024-03-11 16:57:33 - admin Created The Lead - Client Name: Athar, Client Contact Number: 03400294829, Lead Landing Date: 2024-03-11
+2024-03-11 17:04:30 - admin Created The Lead - Client Name: Sultan Akhtar, Client Contact Number: +923332157522, Lead Landing Date: 2024-03-11
+2024-03-18 16:34:14 - admin Created The Lead - Client Name: Athar, Client Contact Number: 2132131232132132121213213, Lead Landing Date: 2024-03-18
+2024-03-19 11:23:56 - admin Created The Lead - Client Name: dawood, Client Contact Number: 44324323243, Lead Landing Date: 2024-03-19
+2024-08-16 10:51:27 - editors Created The Lead - Client Name: abc, Client Contact Number: 123455, Lead Landing Date: 2024-08-16
+2024-09-06 16:41:01 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-06
+2024-09-06 17:13:02 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-06
+2024-09-06 17:18:23 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 43554343245, Lead Landing Date: 2024-09-06
+2024-09-06 17:23:46 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 324332432, Lead Landing Date: 2024-09-06
+2024-09-06 17:33:23 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-06
+2024-09-06 17:35:25 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 43554343245, Lead Landing Date: 2024-09-06
+2024-09-07 10:44:41 - Maaz Created The Lead - Client Name: abcc, Client Contact Number: 324334, Lead Landing Date: 2024-09-07
+2024-09-09 16:08:33 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-09
+2024-09-09 16:24:43 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-09
+2024-09-10 10:46:04 -  Created The Lead - Client Name: dd, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-09
+2024-09-10 11:17:13 -  Created The Lead - Client Name: Core, Client Contact Number: 123, Lead Landing Date: 2024-09-10
+2024-09-10 17:16:22 -  Created The Lead - Client Name: xyz, Client Contact Number: 123456789, Lead Landing Date: 2024-09-10
+2024-09-10 17:42:49 -  Created The Lead - Client Name: AAA, Client Contact Number: 3232323, Lead Landing Date: 2024-09-10
+2024-09-10 18:13:32 -  Created The Lead - Client Name: Qa, Client Contact Number: 234, Lead Landing Date: 2024-09-10
+2024-09-11 10:55:42 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 438342849849, Lead Landing Date: 2024-09-11
+2024-09-11 10:59:13 - Maaz Created The Lead - Client Name: ddd, Client Contact Number: 4324234, Lead Landing Date: 2024-09-11
+2024-09-11 13:15:32 - Maaz Created The Lead - Client Name: maaz, Client Contact Number: 32, Lead Landing Date: 2024-09-11
+2024-09-11 13:17:24 - Maaz Created The Lead - Client Name: dm, Client Contact Number: 432, Lead Landing Date: 2024-09-11
+2024-09-11 13:19:53 - Maaz Created The Lead - Client Name: DM, Client Contact Number: 342342, Lead Landing Date: 2024-09-11
+2024-09-19 17:14:05 -  Created The Lead - Client Name: Social Media Marketing, Client Contact Number: 2321432, Lead Landing Date: 0000-00-00
+2024-09-20 10:48:23 -  Created The Lead - Client Name: dd, Client Contact Number: 43554343245, Lead Landing Date: 0000-00-00
+2024-09-20 11:02:57 -  Created The Lead - Client Name: aaa, Client Contact Number: 21343, Lead Landing Date: 2024-09-20
+2024-09-20 11:03:20 -  Created The Lead - Client Name: Social Media Marketing, Client Contact Number: 2321432, Lead Landing Date: 0000-00-00
+2024-09-21 15:43:16 - dani Created The Lead - Client Name: asd, Client Contact Number: 213, Lead Landing Date: 2024-09-21
+2024-10-15 16:57:47 -  Created The Lead - Client Name: sad, Client Contact Number: 438342849849, Lead Landing Date: 2024-10-15
+2024-10-19 11:18:35 -  Created The Lead - Client Name: Ik, Client Contact Number: 343243, Lead Landing Date: 2024-10-19
+2024-10-19 15:28:33 -  Created The Lead - Client Name: dffdfg, Client Contact Number: 3243243, Lead Landing Date: 2024-09-21

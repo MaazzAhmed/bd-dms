@@ -1,0 +1,46 @@
+2024-01-23 13:38:48 - Lead updated for ID 3: Camp ID: dm to dms
+2024-01-26 11:20:35 - Lead updated for ID 3: Camp ID: dms to dmss
+
+2024-02-12 07:41:26 - daniii updated lead: Client Contact Number: 044324323242 to 0443243232422
+2024-02-12 14:48:16 - daniii updated lead: Camp ID: dmsssssda to dmsssssdaaa
+2024-02-29 18:01:48 - admin updated lead: Client Info:  to New
+2024-03-11 16:50:35 - admin updated lead: Client Info:  to Recurring
+2024-03-14 14:22:23 - admin updated lead: Client Info:  to New
+2024-03-16 12:55:36 - admin updated lead: Client Info:  to Referral
+2024-03-16 12:56:19 - admin updated lead: Client Info:  to Referral
+2024-03-18 16:31:34 - admin updated lead: Client Name: 213213213 to Sutan, Client Country: 213213 to Pakistan, Client Info:  to Referral
+2024-03-19 11:33:36 - admin updated lead: Client Country: North Korea to Azerbaijan, Client Info:  to New
+2024-03-19 11:34:36 - admin updated lead: Client Country: Pak to Argentina, Client Info:  to Recurring
+2024-03-19 11:36:26 - admin updated lead: Client Country: Argentina to Barbados, Client Info:  to Recurring
+2024-03-19 11:55:00 - admin updated lead: Camp ID: mf to md431, Client Info:  to Recurring
+2024-03-21 15:23:03 - admin updated lead: Client Country: United States of America to Afghanistan, Client Info:  to New, Lead Source:  to New
+2024-03-21 15:24:59 - admin updated lead: Client Info:  to New, Lead Source:  to New
+2024-03-23 15:42:17 - admin updated lead: Client Info:  to New, Lead Source:  to New
+2024-08-16 11:23:21 - Maaz updated lead: Client Info:  to New, Lead Source:  to New
+2024-09-07 11:56:28 - Maaz updated lead: Lead Source:  to Organic
+2024-09-07 12:04:15 - Maaz updated lead: Camp ID:  to 3242, Client Name:  to abcc, Client Contact Number:  to 324334, Client Country:  to Netherlands, Client Info:  to New, Lead Source:  to Through Email
+2024-09-07 12:10:46 - Maaz updated lead: Lead Source: Bing to Refer, Brand Name: Allassignments to GoGrades, WhatsApp Name: dd 324342342 to Uk 12345453453, Refer Client Name:  to dd
+2024-09-07 12:12:12 - Maaz updated lead: Lead Source: Refer to Social Media Marketing, WhatsApp Name: dd to Uk 12345453453
+2024-09-07 12:16:17 - Maaz updated lead: Lead Source: Refer to Social Media Marketing
+2024-09-07 14:58:28 - Maaz updated lead: Lead Source:  Lorem ipsum dolor sit amet consectetu to Google, Brand Name: 0 to GoGrades, WhatsApp Name:  to dd 324342342
+2024-09-09 13:16:21 - Maaz updated lead: Camp ID:  to 6153, Client Name:  to maaz, Client Contact Number:  to 438342849849, Client Country:  to Pakistan, Client Info:  to New, Lead Source:  to Refer, Brand Name:  to Gradesup, WhatsApp Name:  to dd 324342342, Refer Client Name:  to dd
+2024-09-10 11:57:52 - Maaz updated lead: Lead Source: Social Media Marketing to Refer
+2024-09-10 11:58:45 - Maaz updated lead: WhatsApp Name: dd 324342342 to Uk 12345453453
+2024-09-10 12:07:41 - Maaz updated lead: Refer Client Name: Core to 
+2024-09-10 12:08:18 - Maaz updated lead: Refer Client Name:  to ddd
+2024-09-10 12:11:12 - Maaz updated lead: Lead Source: Refer to Organic, Brand Name: Gradesup to Allassignments
+2024-09-10 12:11:45 - Maaz updated lead: Camp ID: 132 to 1323333333
+2024-09-10 12:12:30 - Maaz updated lead: Lead Source: Organic to Refer, Brand Name: Allassignments to Gradesup, Refer Client Name:  to ddd
+2024-09-10 12:28:27 - Maaz updated lead: WhatsApp Name: Uk 12345453453 to dd 324342342
+2024-09-11 14:51:24 - Maaz updated lead: Lead Source: Social Media Marketing to Google, Refer Client Name:  to , PlatForm:  to sfd
+2024-09-11 14:51:46 - Maaz updated lead: Lead Source: Google to Social Media Marketing, PlatForm:  to ddddddddddd
+2024-09-11 14:52:10 - Maaz updated lead: Lead Source: Social Media Marketing to Refer, Refer Client Name:  to dddmmm, PlatForm:  to ddddddddddd
+2024-09-11 14:55:35 - Maaz updated lead: PlatForm:  to ddddddddddd
+2024-09-11 14:56:34 - Maaz updated lead: Lead Source: Refer to Organic, PlatForm:  to ddddddddddd
+2024-09-18 17:26:23 - Maaz updated lead: Lead Source: Organic to Through Email, PlatForm:  to 
+2024-09-18 17:26:23 - Maaz updated lead: PlatForm:  to 
+2024-09-18 17:26:23 - Maaz updated lead: PlatForm:  to 
+2024-09-18 17:26:53 - Maaz updated lead: Lead Source: Through Email to Social Media Marketing, PlatForm:  to Facebook
+2024-09-18 17:27:21 - Maaz updated lead: Lead Source: Social Media Marketing to Refer, Refer Client Name:  to Angelo Laura, PlatForm:  to 
+2024-09-23 13:27:17 - Maaz updated lead: PlatForm:  to Facebook
+2024-09-23 15:16:56 - Maaz updated lead: Camp ID: 324432 to 1212123434, PlatForm:  to 

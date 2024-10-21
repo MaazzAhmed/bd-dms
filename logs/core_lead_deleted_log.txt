@@ -1,0 +1,11 @@
+2024-09-09 16:15:11 - Maaz has deleted Lead - ID: 2, Client Name: , Client Contact Number: , Client Country: 
+2024-09-09 16:15:36 - Maaz has deleted Lead - ID: 2, Client Name: , Client Contact Number: , Client Country: 
+2024-09-09 16:17:28 - Maaz has deleted Lead - ID: 3, Client Name: 213213213, Client Contact Number: 123213213, Client Country: 213213
+2024-09-11 11:16:40 - Maaz has deleted Lead - ID: 11, Client Name: dawood, Client Contact Number: 44324323243, Client Country: Pakistan
+2024-09-23 15:43:25 - Maaz has deleted Lead - ID: 33, Client Name: John William, Client Contact Number: 12343455341, Client Country: Afghanistan
+2024-09-23 15:44:16 - Maaz has deleted Lead - ID: 33, Client Name: John William, Client Contact Number: 12343455341, Client Country: Afghanistan
+2024-09-23 15:44:56 - Maaz has deleted Lead - ID: 33, Client Name: John William, Client Contact Number: 12343455341, Client Country: Afghanistan
+2024-09-23 15:45:55 - Maaz has deleted Lead - ID: 33, Client Name: John William, Client Contact Number: 12343455341, Client Country: Afghanistan
+2024-09-23 16:15:55 - Maaz has deleted Lead - ID: 23, Client Name: xyz, Client Contact Number: 123456789, Client Country: Nigeria
+2024-09-24 14:27:40 - Maaz has deleted Lead - ID: 29.
+2024-09-24 15:13:34 - Maaz has deleted Lead - ID: 25, Client Name: Qa, Client Contact Number: 234, Client Country: India
