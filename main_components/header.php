@@ -370,54 +370,55 @@ $SITE_TITLE = "BD-DMS";
 
 
 <body class="bg-theme-2 bg-theme2">
-<?php 
-// Check Work From HOme 
-if( $_SESSION['email'] != ''){
-	$email = $_SESSION['email'];
-		
-	$sql = "SELECT user.*, shift.start_timing, shift.end_timing 
-			FROM user 
-			JOIN shift ON user.shift_id = shift.shiftId 
-			WHERE email = ?";
-	
-	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("s", $email);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	
-	$user = $result->fetch_assoc();
-	
-	date_default_timezone_set('Asia/Karachi');
-	$current_time = date('H:i');
-	$start_time = $user['start_timing'];
-	$end_time = $user['end_timing'];
-	
-	// echo "<script>console.log('$current_time')</script>";
-	// echo "<script>console.log('$start_time')</script>";
-	// echo "<script>console.log('$end_time')</script>";
-		
-	if ($current_time >= $start_time && $current_time <= $end_time) {
-		return;
-	} elseif ($current_time > $end_time) {
-		if ($user['wfh'] == 'Allow' || $_SESSION['role'] == 'Admin' ) {
-			return;
-		} else {          
+<?php
+// Check Work From Home
+if (isset($_SESSION['email']) && $_SESSION['email'] != '') {
+    $email = $_SESSION['email'];
+
+    $sql = "SELECT user.*, shift.start_timing, shift.end_timing 
+            FROM user 
+            JOIN shift ON user.shift_id = shift.shiftId 
+            WHERE email = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $user = $result->fetch_assoc();
+
+    date_default_timezone_set('Asia/Karachi');
+    $current_time = date('H:i');
+    $start_time = $user['start_timing'];
+    $end_time = $user['end_timing'];
+
+    echo "<script>console.log('$current_time')</script>";
+    echo "<script>console.log('$start_time')</script>";
+    echo "<script>console.log('$end_time')</script>";
+
+    // Check if the user is an Admin
+    if ($_SESSION['role'] == 'Admin') {
+        return;
+    }
+
+    // Check if within shift timings
+    if ($current_time >= $start_time && $current_time <= $end_time) {
+        return;
+    }
+
+    // If shift has ended
+    if ($current_time > $end_time) {
+        if ($user['wfh'] == 'Allow') {
+            return;
+        } else {
             $_SESSION['endtiming'] = "Your Shift timing has ended, you cannot log in.";
+            echo "<script>window.location.href = 'login';</script>";
+            exit;
+        }
+    }
 
-			echo "<script>window.location.href = 'login';</script>";
-			exit;
-		}
-		if ($_SESSION['role'] == 'Admin') {
-			return;
-		} 
-	} else {
-        $_SESSION['endtiming'] = "Your Shift timing has ended, you cannot log in.";
-
-		echo "<script>window.location.href = 'login';</script>";
-
-		exit;
-	}
-	}
-	
-	// Check Work From HOme
-    ?>
+    $_SESSION['endtiming'] = "Your Shift timing has ended, you cannot log in.";
+    echo "<script>window.location.href = 'login';</script>";
+    exit;
+}
+?>

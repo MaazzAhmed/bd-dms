@@ -60,6 +60,7 @@
                                 <div class="col-md-6">
                                     <label for="csv_file" class="form-label">Upload File</label>
                                     <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv">
+                                    <input type="hidden" name="userid" value="<?php echo $_SESSION['id'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label for="csv_file" class="form-label">Example CSV</label>

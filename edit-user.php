@@ -209,7 +209,7 @@ $shifts = getShift($conn); ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="inputBrand" class="form-label">Brand Permissions</label>
-                                    <select name="brandname[]" class="single-select form-control form-select " multiple required>
+                                    <select name="brandname[]" class="single-select form-select" multiple required>
                                         <option disabled>Select Brands</option>
 
                                         <?php

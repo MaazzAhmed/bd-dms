@@ -57,11 +57,18 @@ function getUsers($conn)
     $result = mysqli_query($conn, $query);
 
 
+    if (!$result) {
+        die("Query failed: " . mysqli_error($conn));  // Display the error message
+    }
 
     while ($row = mysqli_fetch_assoc($result)) {
-
         $users[] = $row;
     }
+
+    // while ($row = mysqli_fetch_assoc($result)) {
+
+    //     $users[] = $row;
+    // }
 
 
 
@@ -922,15 +929,16 @@ WHERE p.del_status != 'Deleted'
 
  Order BY u.userID DESC";
 
-    $result = mysqli_query($conn, $viewQuery);
+$result = mysqli_query($conn, $viewQuery);
 
+// Check if query execution failed
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
 
-
-    while ($row = mysqli_fetch_assoc($result)) {
-
-        $permissionsv[] = $row;
-    }
-
+while ($row = mysqli_fetch_assoc($result)) {
+    $permissionsv[] = $row;
+}
 
 
     return $permissionsv;
@@ -1460,7 +1468,7 @@ if (isset($_POST["create_lead"])) {
 
     // Insert data into leads table
     if ($lsource == "Refer") {
-        $insertLeadQuery = "INSERT INTO leads (campId, client_name, client_contact_number, lead_landing_date, client_country, client_email, client_info, lead_source, brand_name, whatsapp_name, refer_client_name, platform, lead_type, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertLeadQuery = "INSERT INTO leads (campId, client_name, client_contact_number, lead_landing_date, client_country, client_email, client_info, lead_source, brand_name, whatsapp_name, refer_client_name, lead_type, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmtInsertLead = mysqli_prepare($conn, $insertLeadQuery);
         if ($stmtInsertLead === false) {
@@ -1469,9 +1477,9 @@ if (isset($_POST["create_lead"])) {
             exit();
         }
 
-        mysqli_stmt_bind_param($stmtInsertLead, "sssssssssssssi", $campId, $clientName, $clientContactNumber, $leadLandingDate, $clientCountry, $client_email, $client_info, $lsource, $brandname, $whatsappname, $referClientName, $platformnull, $lead_type, $userId);
+        mysqli_stmt_bind_param($stmtInsertLead, "ssssssssssssi", $campId, $clientName, $clientContactNumber, $leadLandingDate, $clientCountry, $client_email, $client_info, $lsource, $brandname, $whatsappname, $referClientName, $lead_type, $userId);
     } elseif ($lsource == "Social Media Marketing") {
-        $insertLeadQuery = "INSERT INTO leads (campId, client_name, client_contact_number, lead_landing_date, client_country, client_email, client_info, lead_source, brand_name, whatsapp_name,referClientName, platform, lead_type, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertLeadQuery = "INSERT INTO leads (campId, client_name, client_contact_number, lead_landing_date, client_country, client_email, client_info, lead_source, brand_name, whatsapp_name, platform, lead_type, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmtInsertLead = mysqli_prepare($conn, $insertLeadQuery);
         if ($stmtInsertLead === false) {
@@ -1480,7 +1488,7 @@ if (isset($_POST["create_lead"])) {
             exit();
         }
 
-        mysqli_stmt_bind_param($stmtInsertLead, "ssssssssssssi", $campId, $clientName, $clientContactNumber, $leadLandingDate, $clientCountry, $client_email, $client_info, $lsource, $brandname, $whatsappname, $referClientName, $platform, $lead_type, $userId);
+        mysqli_stmt_bind_param($stmtInsertLead, "ssssssssssssi", $campId, $clientName, $clientContactNumber, $leadLandingDate, $clientCountry, $client_email, $client_info, $lsource, $brandname, $whatsappname, $platform, $lead_type, $userId);
     } else {
         $insertLeadQuery = "INSERT INTO leads (campId, client_name, client_contact_number, lead_landing_date, client_country, client_email, client_info, lead_source, brand_name, whatsapp_name, lead_type, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -3540,6 +3548,7 @@ if (isset($_POST['export_csv'])) {
 if (isset($_POST['import-leads'])) {
     if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] === UPLOAD_ERR_OK) {
         $fileName = $_FILES['csv_file']['tmp_name'];
+        $user_id = $_POST['userid'];
 
         if ($_FILES['csv_file']['size'] > 0) {
             $file = fopen($fileName, 'r');
@@ -3560,7 +3569,7 @@ if (isset($_POST['import-leads'])) {
                 $refer_client_name = mysqli_real_escape_string($conn, $column[10]);
                 $platform = mysqli_real_escape_string($conn, $column[11]);
                 $lead_type = mysqli_real_escape_string($conn, $column[12]);
-                $user_id = mysqli_real_escape_string($conn, $column[13]);
+                // $user_id = mysqli_real_escape_string($conn, $column[13]);
 
                 $sql = "INSERT INTO leads (campId, client_name, client_contact_number, client_country, client_email, lead_landing_date, client_info, lead_source, brand_name, whatsapp_name, refer_client_name, platform, lead_type, user_id)
                         VALUES ('$campId', '$client_name', '$client_contact_number', '$client_country', '$client_email', '$lead_landing_date', '$client_info', '$lead_source', '$brand_name', '$whatsapp_name', '$refer_client_name', '$platform', '$lead_type', '$user_id')";
@@ -3659,7 +3668,7 @@ if (isset($_POST['import-core-leads'])) {
 
         if ($_FILES['csv_file']['size'] > 0) {
             $file = fopen($fileName, 'r');
-
+            $user_id = $_POST['userid'];
             fgetcsv($file);
 
             while (($column = fgetcsv($file, 10000, ",")) !== FALSE) {
@@ -3676,7 +3685,7 @@ if (isset($_POST['import-core-leads'])) {
                 $refer_client_name = mysqli_real_escape_string($conn, $column[10]);
                 $platform = mysqli_real_escape_string($conn, $column[11]);
                 $lead_type = mysqli_real_escape_string($conn, $column[12]);
-                $user_id = mysqli_real_escape_string($conn, $column[13]);
+                // $user_id = mysqli_real_escape_string($conn, $column[13]);
 
                 $sql = "INSERT INTO core_leads (campId, client_name, client_contact_number, client_country, client_email, lead_landing_date, client_info, lead_source, brand_name, whatsapp_name, refer_client_name, platform, lead_type, user_id)
                         VALUES ('$campId', '$client_name', '$client_contact_number', '$client_country', '$client_email', '$lead_landing_date', '$client_info', '$lead_source', '$brand_name', '$whatsapp_name', '$refer_client_name', '$platform', '$lead_type', '$user_id')";
