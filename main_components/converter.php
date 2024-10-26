@@ -15,18 +15,87 @@ $offset = ($currentPage - 1) * $recordsPerPage;
 $teamId = isset($_SESSION['team_id']) ? $_SESSION['team_id'] : '';
 
 if ($_SESSION['role'] == 'Admin') {
-$sql = "SELECT `order`.*,  leads.client_email,leads.client_name
-FROM `order`
-LEFT JOIN leads ON `order`.lead_id = leads.id
-";
+    $sql = "
+        SELECT 
+            `order`.*,  
+            leads.client_email, 
+            leads.client_name, 
+            recent_payments.receive_payment AS latest_received, 
+            recent_payments.pending_payment AS latest_pending, 
+            recent_payments.currency AS currency
+        FROM 
+            `order`
+        LEFT JOIN 
+            leads ON `order`.lead_id = leads.id
+        LEFT JOIN (
+            SELECT 
+                op1.order_id, 
+                op1.receive_payment, 
+                op1.pending_payment, 
+                op1.currency
+            FROM 
+                order_payments op1
+            INNER JOIN (
+                SELECT 
+                    order_id, 
+                    MAX(timestamp) AS max_timestamp
+                FROM 
+                    order_payments
+                WHERE 
+                    del_status != 'Deleted'
+                GROUP BY 
+                    order_id
+            ) op2 ON op1.order_id = op2.order_id 
+            AND op1.timestamp = op2.max_timestamp
+            WHERE 
+                op1.del_status != 'Deleted'
+        ) AS recent_payments ON `order`.orderId = recent_payments.order_id
+    ";
 }
-else{
-    $sql = "SELECT `order`.*, user.name, leads.client_email,leads.client_name
-    FROM `order`
-    LEFT JOIN leads ON `order`.lead_id = leads.id
-    LEFT JOIN user ON `order`.user_id = user.userId 
-    WHERE user.team_Id = '$teamId'";
+else {
+    $sql = "
+        SELECT 
+            `order`.*, 
+            user.name, 
+            leads.client_email, 
+            leads.client_name, 
+            recent_payments.receive_payment AS latest_received, 
+            recent_payments.pending_payment AS latest_pending, 
+            recent_payments.currency AS currency
+        FROM 
+            `order`
+        LEFT JOIN 
+            leads ON `order`.lead_id = leads.id
+        LEFT JOIN 
+            user ON `order`.user_id = user.userId
+        LEFT JOIN (
+            SELECT 
+                op1.order_id, 
+                op1.receive_payment, 
+                op1.pending_payment, 
+                op1.currency
+            FROM 
+                order_payments op1
+            INNER JOIN (
+                SELECT 
+                    order_id, 
+                    MAX(timestamp) AS max_timestamp
+                FROM 
+                    order_payments
+                WHERE 
+                    del_status != 'Deleted'
+                GROUP BY 
+                    order_id
+            ) op2 ON op1.order_id = op2.order_id 
+            AND op1.timestamp = op2.max_timestamp
+            WHERE 
+                op1.del_status != 'Deleted'
+        ) AS recent_payments ON `order`.orderId = recent_payments.order_id
+        WHERE 
+            user.team_Id = '$teamId'
+    ";
 }
+
 
 
 
@@ -96,12 +165,12 @@ if ($result->num_rows > 0) {
             echo "<td>{$row['order_status']}</td>";
         }
         echo "<td>{$row['word_count']}</td>";
-        echo "<td  data-bs-toggle='tooltip' data-bs-placement='top' title='{$row['pending_payment_status']}'>{$row['pending_payment']}</td>";
-        echo "<td>{$row['receive_payment']}</td>";
+        echo "<td  data-bs-toggle='tooltip' data-bs-placement='top' title='{$row['pending_payment_status']}'>{$row['latest_pending']}</td>";
+        echo "<td>{$row['latest_received']}</td>";
         echo "<td>{$row['currency']}</td>";
         echo "<td>" . date("j-F-Y", strtotime($row['order_confirmation_date'])) . "</td>";
         if($_SESSION['role'] == 'Admin'){
-        echo "<td> <button class='btn btn-info convertButton' data-receive-payment='{$row['receive_payment']}' data-currency='{$row['currency']}'>Convert</button></td>";
+        echo "<td> <button class='btn btn-info convertButton' data-receive-payment='{$row['latest_received']}' data-currency='{$row['currency']}'>Convert</button></td>";
         }
         echo "<td>
         <form action='view-all-orders' method='post'>

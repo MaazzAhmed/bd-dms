@@ -164,6 +164,7 @@ require_once("./main_components/header.php"); ?>
 
                                             <option value="payment_status" disabled selected>Select Payment Status</option>
 
+                                            <option value="----	">No Payment</option>
                                             <option value="Half Payment">Half Payment</option>
 
                                             <option value="Full Payment">Full Payment</option>
@@ -200,22 +201,7 @@ require_once("./main_components/header.php"); ?>
 
                                     </div>
 
-                                    <div class="col-md-6">
-
-                                        <label for="inputRecievePayment" class="form-label">Pending Payment Status:</label>
-
-                                        <select name="pending_payment_status" class="form-select" placeholder="Pending Payment Status" required id="inputCurrency">
-
-                                            <option  selected="selected" disabled>Select Pending Payment Status</option>
-
-                                            <option value="Paid">Paid</option>
-
-                                            <option selected value="UnPaid">UnPaid</option>
-
-                                        </select>
-
-                                    </div>
-
+                                    
 
                                     <div class="col-md-6">
 
@@ -662,11 +648,10 @@ require_once("./main_components/header.php"); ?>
 
 
 
-                                    <div class="col-md-6">
+                                    <!-- <div class="col-md-6">
 
                                         <label for="inputYear" class="form-label">Year:</label>
 
-                                        <!-- <input type="year" name="year" class="form-control" placeholder="Year" required id="inputYear"> -->
                                         <select name="years" class="form-select">
                                             <option value="">Select Year</option>
                                             <option value="2015">2010</option>
@@ -690,10 +675,9 @@ require_once("./main_components/header.php"); ?>
                                             <option value="2028">2028</option>
                                             <option value="2029">2029</option>
                                             <option value="2030">2030</option>
-                                            <!-- Add more years as needed -->
                                         </select>
 
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-md-6">
 
@@ -712,39 +696,22 @@ require_once("./main_components/header.php"); ?>
 
                                     </div>
 
-
-
-
-
-
-
                                     <input type="hidden" name="user_id" value="<?php echo $_SESSION['id'] ?>" class="form-control">
 
                                     <input type="hidden" name="creator_name" value="<?php echo $_SESSION['user'] ?>" class="form-control" id="inputId">
-
-
-
-
 
                                     <div class="col-12 text-center">
 
                                         <button type="submit" name="create-order" class="btn btn-light px-5">Create
                                             order</button>
-
                                     </div>
-
                                 </form>
-
                             </div>
-
                         </div>
-
                         <?php
                     }                
                     else {
                         echo "<script>window.location.href='view-leads'</script>" . mysqli_error($conn);
-                      
                     }
-                    
                     ?>
                 <?php require_once("./main_components/footer.php"); ?>

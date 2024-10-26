@@ -97,3 +97,5 @@
 2024-09-23 11:59:18 - Maaz has updated the user information, Updated Fields: Team ID (Before: 2, After: 2), Shift (Before: 15, After: 15)
 2024-09-23 11:59:18 - Maaz has updated the brand permissions for user: md.
 2024-10-15 18:05:54 - Maaz has updated the user information, Updated Fields: Team ID (Before: 7, After: 7), Shift (Before: 25, After: 25), Work From Home (Before: Deny, After: Allow)
+2024-10-23 17:38:02 - Maaz has updated the user information, Updated Fields: Team ID (Before: 2, After: 2), Shift (Before: 14, After: 14)
+2024-10-23 17:38:02 - Maaz has updated the brand permissions for user: dani.

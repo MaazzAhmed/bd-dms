@@ -16,14 +16,13 @@ function sumAndConvertCurrency($ipFilter, $monthFilter, $yearFilter)
     // Your logic to sum both received and pending currency for the given month
     $sql = "
         SELECT 
-            SUM(`order`.receive_payment) as received_amount,
-            SUM(`order`.pending_payment) as pending_amount,
-            `order`.currency
-        FROM `order`
-        WHERE `order`.order_confirmation_month LIKE '%$monthFilter%' 
-        AND `order`.year = '$yearFilter'
-        AND (`order`.order_confirmation_month LIKE '%$ipFilter%' OR `order`.order_status LIKE '%$ipFilter%')
-        GROUP BY `order`.currency";
+            SUM(`order_payments`.receive_payment) as received_amount,
+            SUM(`order_payments`.pending_payment) as pending_amount,
+            `order_payments`.currency
+        FROM `order_payments`
+        WHERE `order_payments`.month LIKE '%$monthFilter%' 
+        AND `order_payments`.year = '$yearFilter'
+        GROUP BY `order_payments`.currency";
 
     $result = $conn->query($sql);
 

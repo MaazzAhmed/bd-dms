@@ -23,8 +23,20 @@ if (
 .table-responsive:active {
     cursor: grabbing; /* Change cursor when active (dragging) */
 }
+.dm .dmd {
+    vertical-align: middle;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+}
+
 
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Include SweetAlert CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <!--wrapper-->
 
@@ -33,6 +45,7 @@ if (
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
 
     <!--sidebar wrapper -->
 
@@ -50,7 +63,12 @@ if (
 
     <!--end header -->
 
-
+    <?php
+                    if (isset($_SESSION['Createpayment'])) {
+                        echo "<script>alertify.success('{$_SESSION['Createpayment']}', { position: 'top-right' });</script>";
+                        unset($_SESSION['Createpayment']);
+                    }
+                    ?>
 
     <!--start page wrapper -->
 
@@ -618,6 +636,8 @@ if (
                                 <th>Pending Payment</th>
                                 <th>Receive Payment</th>
                                 <th>Currency</th>
+                                <th>Add</th>
+                                <th>View</th>
                                 <th>Email</th>
                                 <th>Edit</th>
 
@@ -662,7 +682,7 @@ if (
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="invoiceModalLabel">Email Templates</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body" id="invoiceTableContainer">
                 <p><span id="invoiceIdSpan"></span></p>
@@ -710,6 +730,8 @@ if (
 </div>
 
 <!-- End Modal Box -->
+
+
 <!--  -->
 <script>
     const tableContainer = document.querySelector('.table-responsive');
@@ -873,242 +895,8 @@ tableContainer.addEventListener('mousemove', (e) => {
 
 </script>
 
-<script>
-//   $(document).ready(function () {
-//     let currentPage = 1;
-//     let recordsPerPage = 25;
-
-//     // Load analytics data initially
-//     loadAnalyticsData();
-
-//     // Monitor changes in filters
-//     $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname')
-//         .on('input change', function () {
-//             updateActiveFilters();   // Update active filters list
-//             toggleResetButton();     // Check and toggle reset button
-//             loadAnalyticsData();     // Reload data with filters
-//         });
-
-//     // Reset filters on button click
-//     $('#resetFiltersBtn').on('click', function () {
-//         resetFilters(); // Clear all filters
-//         updateActiveFilters(); // Update active filters list
-//         toggleResetButton();  // Hide reset button if no filters
-//         loadAnalyticsData();  // Reload data without filters
-//     });
-
-//     // Show or hide the reset button based on filter values
-//     function toggleResetButton() {
-//         const hasActiveFilters = Object.values(getFilterValues()).some(
-//             value => value && value.trim() !== ''  // Check if any filter has value
-//         );
-
-//         console.log('Has active filters:', hasActiveFilters); // Debugging output
-
-//         if (hasActiveFilters) {
-//             $('#resetFiltersBtn').fadeIn();  // Show reset button
-//         } else {
-//             $('#resetFiltersBtn').fadeOut(); // Hide reset button
-//         }
-//     }
-
-//     // Reset all filters to default values
-//     function resetFilters() {
-//         $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname').val('');
-//         currentPage = 1; // Reset to first page
-//     }
-
-//     // Get current filter values
-//     function getFilterValues() {
-//         return {
-//             ipFilter: $('#ipFilter').val(),
-//             orderStatus: $('#orderStatus').val(),
-//             month: $('#month').val(),
-//             dateTo: $('#dateTo').val(),
-//             leadsource: $('#leadsource').val(),
-//             currency: $('#currency').val(),
-//             creatorName: $('#creatorName').val(),
-//             orderconfirmationdate: $('#orderconfirmationdate').val(),
-//             finaldeadlinetime: $('#finaldeadlinetime').val(),
-//             brandname: $('#brandname').val()
-//         };
-//     }
-
-//     // Update active filters display
-//     function updateActiveFilters() {
-//         const filterValues = getFilterValues();
-//         const activeFilters = [];
-
-//         for (const [key, value] of Object.entries(filterValues)) {
-//             if (value && value.trim() !== '') {  // Safely check for non-empty values
-//                 const formattedKey = formatFilterName(key);
-//                 activeFilters.push(`${formattedKey}: ${value}`);
-//             }
-//         }
-
-//         $('#filterList').empty(); // Clear previous filters
-
-//         if (activeFilters.length > 0) {
-//             $('#activeFilters').show(); // Show active filters section
-//             activeFilters.forEach(filter => {
-//                 $('#filterList').append('<li>' + filter + '</li>'); // Add each filter
-//             });
-//         } else {
-//             $('#activeFilters').hide(); // Hide section if no active filters
-//         }
-//     }
-
-//     // Format filter names (e.g., 'orderStatus' to 'Order Status')
-//     function formatFilterName(name) {
-//         return name
-//             .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-//             .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
-//     }
-
-//     // Load analytics data via Ajax
-//     function loadAnalyticsData() {
-//         $.ajax({
-//             url: 'main_components/view-orders.php',
-//             type: 'POST',
-//             data: {
-//                 ...getFilterValues(), // Send filter values as data
-//                 currentPage,
-//                 recordsPerPage
-//             },
-//             success: function (response) {
-//                 $('#analyticsDataTable tbody').html(response); // Update table
-
-//                 const recordCount = $('#analyticsDataTable tbody tr').length;
-//                 $('#recordCountBadge').text(recordCount - 1); // Update record count badge
-//             },
-//             error: function (xhr, status, error) {
-//                 console.error('Error fetching data:', status, error);
-//                 alert('Error fetching data.');
-//             }
-//         });
-//     }
-// });
 
 
-
-
-</script>
-
-<!-- <script>
-    $(document).ready(function() {
-        let currentPage = 1;
-        let recordsPerPage = 25;
-        let ipFilter = '';
-        let orderStatus = '';
-
-        let month = '';
-        let year = '';
-        let leadsource = '';
-        let currency = '';
-        let creatorName = '';
-        let orderconfirmationdate = '';
-        let finaldeadlinetime = '';
-        let brandname = '';
-        
-        
-        // Load initial analytics data
-        loadAnalyticsData();
-
-        // Automatically apply filters on input change
-        $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname ').on('input change', function() {
-            updateFilters();
-            loadAnalyticsData();
-        });
-
-        // Reset filters on button click
-        $('#resetFiltersBtn').on('click', function() {
-            resetFilters();
-            loadAnalyticsData();
-        });
-
-        // Handle pagination click events
-        $(document).on('click', '.pagination-link', function() {
-            currentPage = $(this).data('page');
-            loadAnalyticsData();
-        });
-
-        // Update filter values
-        function updateFilters() {
-            ipFilter = $('#ipFilter').val();
-            orderStatus = $('#orderStatus').val();
-             month = $('#month').val();
-             year = $('#dateTo').val();
-             leadsource = $('#leadsource').val();
-             currency = $('#currency').val();
-             creatorName = $('#creatorName').val();
-             orderconfirmationdate = $('#orderconfirmationdate').val();
-             finaldeadlinetime = $('#finaldeadlinetime').val();
-             brandname = $('#brandname').val();
-            
-            
-            currentPage = 1; // Reset to the first page when filters change
-        }
-
-        // Reset all filter inputs
-        function resetFilters() {
-            $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname ').val('');
-            ipFilter = orderStatus = month = year = leadsource = currency = creatorName = orderconfirmationdate = finaldeadlinetime = brandname = ''; // Clear variables
-            currentPage = 1; // Reset page to 1
-        }
-
-        // Main function to load data via AJAX
-        function loadAnalyticsData() {
-            console.log('Fetching data with filters:', {
-                ipFilter,
-                orderStatus,
-                month: month,
-                     year,
-                     leadsource,
-                     currency,
-                     creatorName,
-                     orderconfirmationdate,
-                     finaldeadlinetime,
-                     brandname,
-               
-                currentPage,
-                recordsPerPage,
-            });
-
-            $.ajax({
-                url: 'main_components/view-orders.php',
-                type: 'POST',
-                data: {
-                    ipFilter: ipFilter,
-                    orderStatus: orderStatus,
-
-                    month: month,
-                    year: year,
-                    leadsource: leadsource,
-                    currency: currency,
-                    creatorName: creatorName,
-                    orderconfirmationdate: orderconfirmationdate,
-                    finaldeadlinetime: finaldeadlinetime,
-                    brandname: brandname,
-
-                    currentPage: currentPage,
-                    recordsPerPage: recordsPerPage,
-                },
-                success: function(response) {
-                    console.log('Data fetched successfully:', response);
-                    $('#analyticsDataTable tbody').html(response);
-
-                    const recordCount = $('#analyticsDataTable tbody tr').length;
-                    console.log('Number of rows:', recordCount);
-                    $('#recordCountBadge').text(recordCount - 1);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', status, error);
-                    alert('Error fetching data.');
-                },
-            });
-        }
-    });
-</script> -->
 
 <!-- Include jQuery before this script -->
 <script>

@@ -146,38 +146,17 @@ require_once("./main_components/header.php"); ?>
 
                                 </div>
 
-                                <div class="col-md-6">
-
-                                    <label for="inputPendingPayment" class="form-label">Pending Payment:</label>
-
-                                    <input type="tel" name="pending_payment" class="form-control" value="<?php echo $orderValues['pending_payment']; ?>" required id="inputPendingPayment">
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <label for="inputRecievePayment" class="form-label">Recieve Payment:</label>
-
-                                    <input type="tel" name="receive_payment" class="form-control" value="<?php echo $orderValues['receive_payment']; ?>" placeholder="Recieve Payment" required id="inputRecievePayment">
-
-                                </div>
-                                <div class="col-md-6">
+                                
+                                <!-- <div class="col-md-6">
                                     <label for="inputRecievePayment" class="form-label">Pending Payment Status:</label>
                                     <select name="pending_payment_status" class="form-select" placeholder="Pending Payment Status" required id="inputCurrency">
                                         <option value="" disabled>Select Pending Payment Status</option>
                                         <option <?php echo ($orderValues['pending_payment_status'] == 'UnPaid') ? 'selected' : ''; ?> value="UnPaid">UnPaid</option>
                                         <option <?php echo ($orderValues['pending_payment_status'] == 'Paid') ? 'selected' : ''; ?> value="Paid">Paid</option>
                                     </select>
-                                </div>
+                                </div> -->
 
-                                <div class="col-md-6">
-
-                                    <label for="inputCurrency" class="form-label">Currency:</label>
-
-                                    <input type="text" name="currency" class="form-control" value="<?php echo $orderValues['currency']; ?>" placeholder="Currency" required id="inputCurrency">
-
-                                </div>
-
+                                
                                 <div class="col-md-6">
 
                                     <label for="inputAccount" class="form-label">WhatsApp Account:</label>
@@ -289,7 +268,7 @@ require_once("./main_components/header.php"); ?>
 
 
 
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
 
                                     <label for="inputYear" class="form-label">Year:</label>
 
@@ -304,7 +283,7 @@ require_once("./main_components/header.php"); ?>
 
 
 
-                                </div>
+                                </div> -->
 
                                 <div class="col-md-6">
 

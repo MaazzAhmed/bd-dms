@@ -58,3 +58,8 @@
 2024-09-09 15:24:20 -  Order updated for ID 40: order_id_input: 432342 to 432342, payment_status:  to Half Payment, final_deadline_time: 2024-09-09 03:23:00 to 2024-09-09T03:23
 2024-09-10 17:17:45 -  Order updated for ID 48: order_id_input: 43432 to 43432, payment_status:  to Half Payment, final_deadline_time: 2024-09-10 05:17:00 to 2024-09-10T05:17
 2024-10-21 10:58:32 -  Order updated for ID 50: order_id_input: 323 to 323, final_deadline_time: 2024-10-16 10:51:00 to 2024-10-16T10:51
+2024-10-26 13:22:00 -  Order updated for ID 43: order_id_input: 213 to 213, final_deadline_time: 2024-10-31 11:03:00 to 2024-10-31T11:03
+2024-10-26 15:04:16 -  Order updated for ID 43: order_id_input: 213 to 213
+2024-10-26 16:28:40 -  Order updated for ID 43: order_id_input: 213 to 213, order_status: Follow up to Revision, writers_team: few to fewd, pending_payment_status: UnPaid to 
+2024-10-26 16:29:40 -  Order updated for ID 46: order_id_input: 222 to 222, payment_status: ----	 to ----, final_deadline_time: 2024-11-07 07:22:00 to 2024-11-07T07:22, pending_payment_status:  to 
+2024-10-26 16:30:03 -  Order updated for ID 46: order_id_input: 222 to 222, client_requirements: xyz to xyzs, pending_payment_status:  to 

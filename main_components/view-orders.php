@@ -29,18 +29,42 @@ $teamId = $_SESSION['team_id'] ?? '';
 if ($_SESSION['role'] == 'Admin') {
     $sql = "SELECT `order`.*, user.name, user.team_Id, 
             leads.campId, leads.client_name, leads.client_contact_number, 
-            leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name
+            leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
+            recent_payments.receive_payment AS latest_received,
+               recent_payments.pending_payment AS latest_pending,
+               recent_payments.currency AS currency
             FROM `order`
             LEFT JOIN user ON `order`.user_id = user.userId
             LEFT JOIN leads ON `order`.lead_id = leads.id
+               LEFT JOIN (
+                SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency
+                FROM order_payments op1
+                INNER JOIN (
+                    SELECT order_id, MAX(timestamp) AS max_timestamp
+                    FROM order_payments
+                    WHERE del_status != 'Deleted'
+                    GROUP BY order_id
+                ) op2 ON op1.order_id = op2.order_id 
+                AND op1.timestamp = op2.max_timestamp
+                WHERE op1.del_status != 'Deleted'
+            ) AS recent_payments ON `order`.orderId = recent_payments.order_id
             WHERE order.del_status != 'Deleted'";
 } else {
     $sql = "SELECT `order`.*, user.name, user.team_Id, 
             leads.campId, leads.client_name, leads.client_contact_number, 
-            leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name
+            leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
+            recent_payments.receive_payment AS latest_received,
+               recent_payments.pending_payment AS latest_pending,
+               recent_payments.currency AS currency
             FROM `order`
             LEFT JOIN user ON `order`.user_id = user.userId
             LEFT JOIN leads ON `order`.lead_id = leads.id
+            LEFT JOIN (
+            SELECT order_id, receive_payment, pending_payment, currency
+            FROM order_payments
+            WHERE del_status != 'Deleted'
+            ORDER BY timestamp DESC 
+        ) AS recent_payments ON `order`.orderId = recent_payments.order_id
             WHERE user.userId = '$userid' AND order.del_status != 'Deleted'";
 }
 
@@ -53,9 +77,9 @@ if (!empty($ipFilter)) {
         OR order.order_confirmation_month LIKE '%$ipFilter%'
         OR order.order_status LIKE '%$ipFilter%'
         OR order.payment_status LIKE '%$ipFilter%'
-        OR order.pending_payment LIKE '%$ipFilter%'
-        OR order.receive_payment LIKE '%$ipFilter%'
-        OR order.currency LIKE '%$ipFilter%'
+        OR recent_payments.pending_payment LIKE '%$ipFilter%'
+        OR recent_payments.receive_payment LIKE '%$ipFilter%'
+        OR recent_payments.currency LIKE '%$ipFilter%'
         OR leads.client_contact_number LIKE '%$ipFilter%'
         OR leads.client_name LIKE '%$ipFilter%'
         OR leads.lead_source LIKE '%$ipFilter%'
@@ -169,8 +193,8 @@ if ($result->num_rows > 0) {
             echo "<td>{$row['order_status']}</td>";
         }
         echo "<td>{$row['word_count']}</td>";
-        
-        
+
+
         echo "<td>{$row['lead_source']}</td>";
         if ($row['payment_status'] == 'Full Payment') {
             echo "<td style='background-color: Yellow;'><span class='badge' style='color: grey ;'>{$row['payment_status']}</span></td>";
@@ -179,15 +203,36 @@ if ($result->num_rows > 0) {
         } else {
             echo "<td>{$row['payment_status']}</td>";
         }
-        echo "<td>{$row['pending_payment']}</td>";
-        echo "<td>{$row['receive_payment']}</td>";
+        echo "<td>{$row['latest_pending']}</td>";
+        echo "<td>{$row['latest_received']}</td>";
         echo "<td>{$row['currency']}</td>";
-        
-       
 
-        echo "<td class='mt-4'><a href='#invoiceModal' class='open-invoice btn btn-secondary' data-invoice-id='{$row['lead_id']}' data-toggle='modal'>Open Template</a>
+
+        echo "<td>
+        <form method='post' action='add-payment'>
+       <input type='hidden' name='order_id' value='{$row['orderId']}'>
+       <button type='submit' class='btn btn-warning dm' name='add-payment'><i class='bx bx-plus dmd'>Payment</i></button>
+   </form>  </td>";
+
+        //          echo "<td>
+        //         <form method='post' action='view-payments'>
+        //        <input type='hidden' name='order_id' value='{$row['orderId']}'>
+        //        <button type='submit' class='btn btn-success dm' name='view-payment'><i class='fa fa-eye dmd'>Payment</i></button>
+        //    </form> </td>";
+        echo "<td>
+         <form method='post' action='view-payments'>
+                <input type='hidden' name='order_id' value='{$row['orderId']}'>
+                <button type='submit' class='btn btn-success dm' name='view-payment'><i class='fa fa-eye dmd'>Payment</i></button>
+            </form> 
+     </td>";
+     
+     
+
+
+        echo "<td class='mt-4'><a href='#invoiceModal' class='open-invoice btn btn-secondary' data-invoice-id='{$row['lead_id']}' data-toggle='modal'>Template</a>
 
         </td>";
+
 
         echo "<td>
          <form method='post' action='edit-order'>
@@ -203,18 +248,17 @@ if ($result->num_rows > 0) {
                 <button type='button' class='btn btn-danger' onclick='confirmKeyAndDeleteOrder({$row['orderId']})'>Delete</button>
             </form>
         </td>";
-    }
+        }
         echo "<td>
         <form action='view-all-orders' method='post'>
         <input type='hidden' name='allordersid' value='{$row['orderId']}'>
         <button type='submit' name='view-all-orders' class='btn btn-success'>View</button>
         </form>
         </td>";
-        echo "<td>
-        <form method='post' action='order-payment'>
-        <input type='hidden' name='order_id' value='{$row['orderId']}'>
-       
-        </form> </td>";
+        // echo "<td>
+        // <form method='post' action='order-payment'>
+        // <input type='hidden' name='order_id' value='{$row['orderId']}'>
+        // </form> </td>";
         echo "</tr>";
         $idCounter++;
     }
@@ -244,4 +288,3 @@ if ($currentPage < $totalPages) {
 }
 
 echo '</ul></nav></td></tr>';
-?>

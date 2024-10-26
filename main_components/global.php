@@ -814,7 +814,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_user' && isset($_POS
     $inputKey = $_POST['inputKey'];
     $secret_key = 'XqzQh9G4Ju87Gqfy4xZkQzZ+2HdF0YqM/pjHoN6ITe0='; // Base64-encoded secret key
 
-   
+
 
     // Fetch and decrypt the key from the delete_keys table
     $sql = "SELECT `key` FROM delete_keys WHERE id = 2";
@@ -865,7 +865,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_user' && isset($_POS
                 $logFileName = '../logs/user_deletion_log.txt'; // Ensure correct path to logs folder
 
                 $logMessage = "The '$userName' account was deleted successfully by user: $deletepersonname";
-                
+
                 // Ensure the logs directory exists
                 $logDir = realpath(__DIR__ . '/../logs');
                 if ($logDir === false || !is_dir($logDir)) {
@@ -873,25 +873,25 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_user' && isset($_POS
                     $logDir = __DIR__ . '/../logs';
                     mkdir($logDir, 0755, true);
                 }
-                
+
                 // Full path for log file
                 $logFile = $logDir . '/' . $logFileName;
-                
+
                 // Create the log file if it doesn't exist
                 if (!file_exists($logFile)) {
                     touch($logFile);
                 }
-                
+
                 // Write the log message to the file
                 file_put_contents($logFile, date('Y-m-d H:i:s') . ' - ' . $logMessage . PHP_EOL, FILE_APPEND);
-                
+
 
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'User and permissions deleted successfully!']);
-                error_log("Checkpoint: User deleted successfully."); 
+                error_log("Checkpoint: User deleted successfully.");
             } catch (Exception $e) {
                 mysqli_rollback($conn);
-                error_log("Error during deletion: " . $e->getMessage());  
+                error_log("Error during deletion: " . $e->getMessage());
                 echo json_encode(['status' => 'error', 'message' => 'Error deleting user. Please try again.']);
             }
         } else {
@@ -929,16 +929,16 @@ WHERE p.del_status != 'Deleted'
 
  Order BY u.userID DESC";
 
-$result = mysqli_query($conn, $viewQuery);
+    $result = mysqli_query($conn, $viewQuery);
 
-// Check if query execution failed
-if (!$result) {
-    die("Query failed: " . mysqli_error($conn));
-}
+    // Check if query execution failed
+    if (!$result) {
+        die("Query failed: " . mysqli_error($conn));
+    }
 
-while ($row = mysqli_fetch_assoc($result)) {
-    $permissionsv[] = $row;
-}
+    while ($row = mysqli_fetch_assoc($result)) {
+        $permissionsv[] = $row;
+    }
 
 
     return $permissionsv;
@@ -1704,7 +1704,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_live_lead' && isset(
         if ($inputKey === $dbKey) {
             // Retrieve lead information before deletion
             $leadToDelete = getLeadInfo($leadIdDelete);
-            
+
             // Update the lead's status
             $deleteLeadQuery = "UPDATE leads SET del_status = ? WHERE id = ?";
             $stmtDeleteLead = mysqli_prepare($conn, $deleteLeadQuery);
@@ -1991,57 +1991,6 @@ function getCoreLeadInfo($leadId)
     return $leadInfo;
 }
 
-// Start Delete Core Leads
-
-// if (isset($_POST['core_lead_delete'])) {
-
-//     $leadIdDelete = $_POST['l_id'];
-
-//     $creator_name = $_POST['creator_name'];
-
-//     $leadstatus = "Deleted";
-
-
-//     // Retrieve lead information before deletion
-
-//     $leadToDelete = getLeadInfo($leadIdDelete);
-
-
-//     // Delete from Shift table
-
-//     $deleteShiftQuery = "UPDATE core_leads SET del_status = ? WHERE id = ?";
-
-//     $stmtDeleteShift = mysqli_prepare($conn, $deleteShiftQuery);
-
-//     mysqli_stmt_bind_param($stmtDeleteShift, "si", $leadstatus, $leadIdDelete);
-
-//     $executeResult = mysqli_stmt_execute($stmtDeleteShift);
-
-
-
-//     mysqli_stmt_close($stmtDeleteShift);
-
-
-
-//     if ($executeResult) {
-
-//         // Log lead deletion
-
-//         $logMessage = "$creator_name has deleted Lead - ID: $leadIdDelete, Client Name: {$leadToDelete['client_name']}, Client Contact Number: {$leadToDelete['client_contact_number']}, Client Country: {$leadToDelete['client_country']}";
-
-//         $logFileName = 'core_lead_deleted_log.txt';
-
-//         customLogToFile($logMessage, $logFileName);
-
-
-
-//         $_SESSION['dlead'] = 'Lead deleted successfully!.';
-//     } else {
-
-//         $_SESSION['dlead'] = 'Error deleting lead. Please try again.';
-//     }
-// }
-
 
 if (isset($_POST['action']) && $_POST['action'] === 'delete_lead' && isset($_POST['l_id']) && isset($_POST['inputKey'])) {
     $leadIdDelete = $_POST['l_id'];
@@ -2062,7 +2011,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_lead' && isset($_POS
         if ($inputKey === $dbKey) {
             // Retrieve lead information before deletion
             $leadToDelete = getLeadInfo($leadIdDelete);
-            
+
             // Update the lead's status
             $deleteLeadQuery = "UPDATE core_leads SET del_status = ? WHERE id = ?";
             $stmtDeleteLead = mysqli_prepare($conn, $deleteLeadQuery);
@@ -2089,16 +2038,17 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_lead' && isset($_POS
 
     exit();
 }
-    // Include the encryption and decryption functions
-    function encrypt($data, $key)
-    {
-        $encryption_key = base64_decode($key);
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $encryption_key, 0, $iv);
-        return base64_encode($encrypted . '::' . $iv);
-    }
+// Include the encryption and decryption functions
+function encrypt($data, $key)
+{
+    $encryption_key = base64_decode($key);
+    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $encryption_key, 0, $iv);
+    return base64_encode($encrypted . '::' . $iv);
+}
 // Decrypt function
-function decrypt($data, $key) {
+function decrypt($data, $key)
+{
     $encryption_key = base64_decode($key);
     list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $encryption_key, 0, $iv);
@@ -2142,12 +2092,8 @@ if (isset($_POST['create-order'])) {
     $order_confirmation_date = date("Y-m-d", strtotime($_POST['order_confirmation_date']));
 
     $order_confirmation_month = date("F", strtotime($_POST['order_confirmation_date']));
-    $pending_payment_status = $_POST['pending_payment_status'];
-
 
     date_default_timezone_set('Asia/Karachi');
-
-
 
     $writers_team = $_POST['writers_team'];
 
@@ -2156,7 +2102,7 @@ if (isset($_POST['create-order'])) {
     $assigned_to = $_POST['assigned_to'];
 
     $year = date('Y');
-    $years = $_POST['years'];
+    // $years = $_POST['years'];
     $comment = $_POST['comment'];
 
     $client_requirements = $_POST['client_requirements'];
@@ -2171,38 +2117,98 @@ if (isset($_POST['create-order'])) {
 
     $sql = "INSERT INTO `order` (
 
-        order_title,order_id_input, order_status, payment_status, word_count, pending_payment, receive_payment,
+        order_title,order_id_input, order_status, payment_status, word_count,
 
-        currency, whatsapp_account, payment_account, portal_due_date, final_deadline_time,
+         whatsapp_account, payment_account, portal_due_date, final_deadline_time,
 
-        order_confirmation_date, pending_payment_status, writers_team, plan, assigned_to, year, years, comment, client_requirements,
+        order_confirmation_date, writers_team, plan, assigned_to, year, comment, client_requirements,
 
         order_confirmation_month, user_id, lead_id)
 
-    VALUES ('$order_title','$order_id_input', '$order_status', '$payment_status', $word_count, $pending_payment, $receive_payment, '$currency', '$whatsapp_account', '$payment_account', '$portal_due_date', '$final_deadline_time', '$order_confirmation_date','$pending_payment_status', '$writers_team', '$plan', '$assigned_to', $year, $years, '$comment','$client_requirements', '$order_confirmation_month', $user_id, $leadid)";
+    VALUES ('$order_title','$order_id_input', '$order_status', '$payment_status', $word_count, '$whatsapp_account', '$payment_account', '$portal_due_date', '$final_deadline_time', '$order_confirmation_date', '$writers_team', '$plan', '$assigned_to', $year, '$comment','$client_requirements', '$order_confirmation_month', $user_id, $leadid)";
+    $orderid = mysqli_insert_id($conn);
 
 
 
 
+    // Execute the order insert query
     if ($conn->query($sql) === TRUE) {
+        $orderid = mysqli_insert_id($conn);  // Get the inserted order's ID
 
-        // Log order creation
+        // Insert into `order_payments` table
+        $sql2 = "INSERT INTO `order_payments` (pending_payment, receive_payment, month, currency, payment_date, order_id) 
+                 VALUES ($pending_payment, $receive_payment, '$order_confirmation_month', '$currency', '$order_confirmation_date', $orderid)";
 
-        $logMessage = "creator_name Created The  Order - Order ID: $order_id_input, Order Title: $order_title";
+        if ($conn->query($sql2) === TRUE) {
+            // Log order creation
+            $logMessage = "$creator_name Created The Order - Order ID: $order_id_input, Order Title: $order_title";
+            $logFileName = 'order_created_log.txt';
+            customLogToFile($logMessage, $logFileName);
 
-        $logFileName = 'order_created_log.txt';
-
-        customLogToFile($logMessage, $logFileName);
-
-        header("Location: view-orders");
-        $_SESSION['CreateOrder'] = 'Order created successfully!.';
+            // Redirect and set success message
+            $_SESSION['CreateOrder'] = 'Order created successfully!';
+            header("Location: view-orders");
+            exit();
+        } else {
+           echo 'Error: ' . $sql2 . '<br>' . $conn->error;
+        }
     } else {
-
-        $_SESSION['CreateOrder'] = 'Error: ' . $sql . '<br>' . $conn->error;
+       echo 'Error: ' . $sql . '<br>' . $conn->error;
     }
 }
 
+
 // End create Order
+
+if (isset($_POST['add_payment'])) {
+    $order_id = $_POST['order_id'];
+    $receive_payment =  $_POST['receive_payment'];
+    $pending_payment =  $_POST['pending_payment']; // Fetch the original pending payment from the hidden input
+    $new_pending_payment = $pending_payment - $receive_payment;
+
+    $currency = $_POST['currency'];
+    $order_confirmation_date = date("Y-m-d", strtotime($_POST['order_confirmation_date']));
+    $order_confirmation_month = date("F", strtotime($_POST['order_confirmation_date']));
+
+    $sql = "INSERT INTO order_payments(pending_payment, receive_payment, currency, month, payment_date, order_id)
+            VALUES (?, ?, ?, ?, ?, ?)";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("sssssi", $new_pending_payment, $receive_payment, $currency, $order_confirmation_month, $order_confirmation_date, $order_id);
+
+        if ($stmt->execute()) {
+            $_SESSION['Createpayment'] = "Payment added successfully!";
+        } else {
+            $_SESSION['Createpayment'] = "Failed to add payment: " . $stmt->error;
+        }
+    } else {
+        $_SESSION['Createpayment'] = "SQL Error: " . $conn->error;
+    }
+
+    header("Location: view-orders");
+    exit();
+}
+// End add payment
+
+// Start VIew PAyments
+if ( isset($_POST['view-payment'])) {
+    $orderId = $_POST['order_id'];
+
+    // Prepare and execute the SQL query to fetch payment details
+    $stmt = $conn->prepare("SELECT `id`, `pending_payment`, `receive_payment`, `month`, `currency`, `payment_date` FROM `order_payments` WHERE `order_id` = ?");
+    $stmt->bind_param("s", $orderId); // Assuming order_id is a string
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Fetch the payment details
+    $paymentDetails = [];
+    while ($row = $result->fetch_assoc()) {
+        $paymentDetails[] = $row;
+    }
+
+    $stmt->close();
+}
+
 // Start Convert core leads
 
 if (isset($_POST['create-corelead-order'])) {
@@ -2287,99 +2293,96 @@ if (isset($_POST['create-corelead-order'])) {
 
 // End create Order
 
-if (isset($_POST['order-payment'])) {
+// if (isset($_POST['order-payment'])) {
 
 
 
-    date_default_timezone_set('Asia/Karachi');
+//     date_default_timezone_set('Asia/Karachi');
 
-    $leadid = $_POST['leadid'];
-    $user_id = $_POST['user_id'];
-
-
-    $order_id = $_POST['order_id'];
-
-    $creator_name = $_POST['creator_name'];
-
-    $order_id_input = $_POST['order_id_input'];
-
-    $order_title = $_POST['order_title'];
-
-    $order_status = $_POST['order_status'];
-    $payment_status = $_POST['payment_status'];
-
-    $word_count = $_POST['word_count'];
-
-    $pending_payment = $_POST['pending_payment'];
-
-    $receive_payment = $_POST['receive_payment'];
-
-    $currency = $_POST['currency'];
-
-    $whatsapp_account = $_POST['whatsapp_account'];
-
-    $payment_account = $_POST['payment_account'];
-
-    $portal_due_date = $_POST['portal_due_date'];
-
-    $final_deadline_time = $_POST['final_deadline_time'];
-
-    $order_confirmation_date = $_POST['order_confirmation_date'];
-
-    $order_confirmation_month = date("F", strtotime($_POST['order_confirmation_date']));
+//     $leadid = $_POST['leadid'];
+//     $user_id = $_POST['user_id'];
 
 
-    $writers_team = $_POST['writers_team'];
+//     $order_id = $_POST['order_id'];
 
-    $plan = $_POST['plan'];
+//     $creator_name = $_POST['creator_name'];
 
-    $assigned_to = $_POST['assigned_to'];
-    $year = date('Y');
+//     $order_id_input = $_POST['order_id_input'];
 
-    $years = $_POST['years'];
-    $comment = $_POST['comment'];
+//     $order_title = $_POST['order_title'];
 
-    $client_requirements = $_POST['client_requirements'];
+//     $order_status = $_POST['order_status'];
+//     $payment_status = $_POST['payment_status'];
+
+//     $word_count = $_POST['word_count'];
+
+//     $pending_payment = $_POST['pending_payment'];
+
+//     $receive_payment = $_POST['receive_payment'];
+
+//     $currency = $_POST['currency'];
+
+//     $whatsapp_account = $_POST['whatsapp_account'];
+
+//     $payment_account = $_POST['payment_account'];
+
+//     $portal_due_date = $_POST['portal_due_date'];
+
+//     $final_deadline_time = $_POST['final_deadline_time'];
+
+//     $order_confirmation_date = $_POST['order_confirmation_date'];
+
+//     $order_confirmation_month = date("F", strtotime($_POST['order_confirmation_date']));
 
 
+//     $writers_team = $_POST['writers_team'];
+
+//     $plan = $_POST['plan'];
+
+//     $assigned_to = $_POST['assigned_to'];
+//     $year = date('Y');
+
+//     $years = $_POST['years'];
+//     $comment = $_POST['comment'];
+
+//     $client_requirements = $_POST['client_requirements'];
 
 
 
+  
+//     // Insert data into `order` table
 
-    // Insert data into `order` table
-
-    $sql = "INSERT INTO `order` (
-        order_id_input, order_title, order_status, payment_status, word_count, pending_payment, receive_payment,
-        currency, whatsapp_account, payment_account, portal_due_date, final_deadline_time,
-        order_confirmation_date, writers_team, plan, assigned_to, year, years, comment, client_requirements,
-        order_confirmation_month, user_id, lead_id)
-    VALUES (
-        '$order_id_input', '$order_title', '$order_status', '$payment_status', '$word_count', '$pending_payment', '$receive_payment',
-        '$currency', '$whatsapp_account', '$payment_account', '$portal_due_date', '$final_deadline_time',
-        '$order_confirmation_date', '$writers_team', '$plan', '$assigned_to', '$year', '$years', '$comment', '$client_requirements',
-        '$order_confirmation_month', '$user_id', '$leadid')";
+//     $sql = "INSERT INTO `order` (
+//         order_id_input, order_title, order_status, payment_status, word_count, nwhatsapp_account, payment_account, portal_due_date, final_deadline_time,
+//         order_confirmation_date, writers_team, plan, assigned_to, year, years, comment, client_requirements,
+//         order_confirmation_month, user_id, lead_id)
+//     VALUES (
+//         '$order_id_input', '$order_title', '$order_status', '$payment_status', '$word_count', '$pending_payment', '$receive_payment',
+//         '$currency', '$whatsapp_account', '$payment_account', '$portal_due_date', '$final_deadline_time',
+//         '$order_confirmation_date', '$writers_team', '$plan', '$assigned_to', '$year', '$years', '$comment', '$client_requirements',
+//         '$order_confirmation_month', '$user_id', '$leadid')";
 
 
 
 
 
-    if ($conn->query($sql) === TRUE) {
+//     if ($conn->query($sql) === TRUE) {
 
-        // Log order creation
+//         // Log order creation
 
-        $logMessage = "creator_name Created The  Order - Order ID: $order_id_input, Order Title: $order_title";
+//         $logMessage = "creator_name Created The  Order - Order ID: $order_id_input, Order Title: $order_title";
 
-        $logFileName = 'order_created_log.txt';
+//         $logFileName = 'order_created_log.txt';
 
-        customLogToFile($logMessage, $logFileName);
+//         customLogToFile($logMessage, $logFileName);
 
-        header("Location: view-orders.php");
-        $_SESSION['CreateOrder'] = 'Order created successfully!.';
-    } else {
+//         header("Location: view-orders.php");
+//         $_SESSION['CreateOrder'] = 'Order created successfully!.';
+//     } else {
 
-        $_SESSION['CreateOrder'] = 'Error: ' . $sql . '<br>' . $conn->error;
-    }
-}
+//         $_SESSION['CreateOrder'] = 'Error: ' . $sql . '<br>' . $conn->error;
+//     }
+// }
 
 
 
@@ -2394,7 +2397,7 @@ function getOrderRecords($conn)
 
     $orders = array();
 
-    $query = "SELECT orderId,order_id_input, order_title, payment_status, order_status, word_count, pending_payment, receive_payment, currency, whatsapp_account, payment_account, portal_due_date, final_deadline_time, order_confirmation_date, writers_team, plan, assigned_to, year, years, comment, client_requirements, user.name, leads.campId, leads.client_name, leads.client_contact_number, leads.lead_landing_date, leads.client_name,leads.client_contact_number, leads.lead_landing_date, leads.client_country, leads.client_email,lead_id
+    $query = "SELECT orderId,order_id_input, order_title, payment_status, order_status, word_count, whatsapp_account, payment_account, portal_due_date, final_deadline_time, order_confirmation_date, writers_team, plan, assigned_to, year, years, comment, client_requirements, user.name, leads.campId, leads.client_name, leads.client_contact_number, leads.lead_landing_date, leads.client_name,leads.client_contact_number, leads.lead_landing_date, leads.client_country, leads.client_email,lead_id
 
     FROM `order`
 
@@ -2480,6 +2483,8 @@ function getDetailsForSelectedOrder($conn, $orderId)
               
               LEFT JOIN shift ON user.shift_id = shift.shiftId
               LEFT JOIN team ON user.team_Id = team.teamId
+            --   LEFT JOIN order_payments ON order.orderId = order_payments.order_id
+
 
 
               WHERE orderId = $orderId";
@@ -2623,7 +2628,7 @@ if (isset($_POST['update-order'])) {
     $writers_team = $_POST['writers_team'];
     $plan = $_POST['plan'];
     $assigned_to = $_POST['assigned_to'];
-    $years = $_POST['years'];
+    // $years = $_POST['years'];
     $comment = $_POST['comment'];
     $client_requirements = $_POST['client_requirements'];
     $pending_payment_status = $_POST['pending_payment_status'];
@@ -2640,9 +2645,7 @@ if (isset($_POST['update-order'])) {
         'order_status',
         'payment_status',
         'word_count',
-        'pending_payment',
-        'receive_payment',
-        'currency',
+        // 'currency',
         'whatsapp_account',
         'payment_account',
         'portal_due_date',
@@ -2672,20 +2675,17 @@ if (isset($_POST['update-order'])) {
         // Get the current month
         $current_month = date('F');
         // Update data in the order table
-        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, pending_payment = ?, receive_payment = ?, currency = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, years = ?, comment = ?, client_requirements = ?, pending_payment_Month = ? WHERE orderId = ?";
+        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, comment = ?, client_requirements = ?, pending_payment_Month = ? WHERE orderId = ?";
         $stmtUpdateOrder = mysqli_prepare($conn, $updateOrderQuery);
         if ($stmtUpdateOrder) {
             mysqli_stmt_bind_param(
                 $stmtUpdateOrder,
-                "sssssssssssssssssssssi",
+                "sssssssssssssssssi",
                 $order_id_input,
                 $order_title,
                 $order_status,
                 $payment_status,
                 $word_count,
-                $pending_payment,
-                $receive_payment,
-                $currency,
                 $whatsapp_account,
                 $payment_account,
                 $portal_due_date,
@@ -2695,7 +2695,7 @@ if (isset($_POST['update-order'])) {
                 $writers_team,
                 $plan,
                 $assigned_to,
-                $years,
+                // $years,
                 $comment,
                 $client_requirements,
                 $current_month,
@@ -2713,20 +2713,17 @@ if (isset($_POST['update-order'])) {
         }
     } else {
         // Update data in the order table
-        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, pending_payment = ?, receive_payment = ?, currency = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, years = ?, comment = ?, client_requirements = ? WHERE orderId = ?";
+        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, comment = ?, client_requirements = ? WHERE orderId = ?";
         $stmtUpdateOrder = mysqli_prepare($conn, $updateOrderQuery);
         if ($stmtUpdateOrder) {
             mysqli_stmt_bind_param(
                 $stmtUpdateOrder,
-                "ssssssssssssssssssssi",
+                "ssssssssssssssssi",
                 $order_id_input,
                 $order_title,
                 $order_status,
                 $payment_status,
                 $word_count,
-                $pending_payment,
-                $receive_payment,
-                $currency,
                 $whatsapp_account,
                 $payment_account,
                 $portal_due_date,
@@ -2736,7 +2733,7 @@ if (isset($_POST['update-order'])) {
                 $writers_team,
                 $plan,
                 $assigned_to,
-                $years,
+                // $years,
                 $comment,
                 $client_requirements,
                 $order_id
@@ -2867,14 +2864,14 @@ if (isset($_POST['server_credentials-2'])) {
 
         // Use prepared statements to avoid SQL injection
         $query4 = "UPDATE email_setting SET servername = ?, port = ?, email = ?, password = ?, description = ? WHERE id = ?";
-        
+
         // Prepare the statement
         $stmt = $conn->prepare($query4);
         $stmt->bind_param("sssssi", $servername, $port, $email, $password, $description, $rowId); // Bind the ID as well
 
         if ($stmt->execute()) {
-            $_SESSION['eset2'] = 'Email settings updated successfully.'; 
-                       echo "<script>window.location.href = 'index.php';</script>"; // Adjust the filename as necessary
+            $_SESSION['eset2'] = 'Email settings updated successfully.';
+            echo "<script>window.location.href = 'index.php';</script>"; // Adjust the filename as necessary
 
         } else {
             $_SESSION['eset2'] = "Error updating email settings: " . $stmt->error;
@@ -3131,7 +3128,7 @@ if (isset($_POST['create-brand'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $desc = $_POST['desc'];
-    $templateFileName = $brandname .'-email-template';
+    $templateFileName = $brandname . '-email-template';
 
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
@@ -3148,19 +3145,19 @@ if (isset($_POST['create-brand'])) {
         $insertEmailSettingQuery = "INSERT INTO email_setting (id, email, password, servername, port, description, file_name, brandname) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtEmailSetting = mysqli_prepare($conn, $insertEmailSettingQuery);
         mysqli_stmt_bind_param($stmtEmailSetting, "isssssss", $brandId, $email, $password, $servername, $port, $desc, $templateFileName, $brandname);
-        
+
         // Check if email settings insertion was successful
         if (!mysqli_stmt_execute($stmtEmailSetting)) {
             throw new Exception('Error inserting email settings.');
         }
-        $templateContent ='
+        $templateContent = '
         <?php $TITLE = "' . $brandname . ' Email Template"; ?>  
-        <?php $file_name = " '.$templateFileName. '"; ?>
+        <?php $file_name = " ' . $templateFileName . '"; ?>
         <?php require_once("./main_components/header.php"); ?>
         <?php require_once("email-template-component.php");?>
         
         ';
-        $filePath =  $templateFileName.".php";
+        $filePath =  $templateFileName . ".php";
         file_put_contents($filePath, $templateContent);
 
 
@@ -3254,7 +3251,7 @@ if (isset($_POST['update_brand'])) {
 
 
 
-// Update Brands
+    // Update Brands
     $updateBrandQuery = "UPDATE brands SET brand_name = ? WHERE id = ?";
 
     $stmtUpdateBrande = mysqli_prepare($conn, $updateBrandQuery);
@@ -3267,7 +3264,7 @@ if (isset($_POST['update_brand'])) {
 
     // Update Email Settings Brand Name
     $updateEmailSettingQuery = "UPDATE email_setting SET brandname = ? WHERE id = ?";
-    
+
     $stmtUpdateEmailSete = mysqli_prepare($conn, $updateEmailSettingQuery);
 
     mysqli_stmt_bind_param($stmtUpdateEmailSete, "si", $brandname, $brand_id);
