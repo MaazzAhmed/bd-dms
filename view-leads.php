@@ -16,16 +16,14 @@ if (
 
 ?>
 <style>
+    .table-responsive {
+        overflow: hidden;
+        cursor: grab;
+    }
 
-.table-responsive {
-    overflow: hidden;
-    cursor: grab; 
-}
-.table-responsive:active {
-    cursor: grabbing; 
-}
-
-
+    .table-responsive:active {
+        cursor: grabbing;
+    }
 </style>
 <!--wrapper-->
 
@@ -121,6 +119,8 @@ if (
                                     $leads = array();
                                     $userid = $_SESSION['id'];
                                     $role = $_SESSION['role'];
+                                    $teamId = $_SESSION['team_id'] ?? '';
+
 
 
                                     if ($role == 'Admin') {
@@ -129,7 +129,8 @@ if (
                          leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
                          leads.refer_client_name, user.name
                   FROM leads 
-                  LEFT JOIN user ON leads.user_id = user.userId WHERE leads.del_status != 'Deleted'
+                  LEFT JOIN user ON leads.user_id = user.userId 
+                  WHERE leads.del_status != 'Deleted' 
                   ORDER BY leads.id DESC";
                                     } else if ($role == 'Viewer') {
                                         $brands = getAllowedDisplayBrandsForUser($conn, $userid);
@@ -151,7 +152,7 @@ if (
                              leads.lead_landing_date, leads.client_country, leads.client_email, 
                              leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
                              leads.refer_client_name, user.name
-                      FROM leads
+                            FROM leads
                       LEFT JOIN user ON leads.user_id = user.userId     
                       WHERE leads.brand_name IN ($brandList)  AND leads.del_status != 'Deleted'
 
@@ -167,7 +168,8 @@ if (
                          leads.refer_client_name, user.name
                   FROM leads
                   LEFT JOIN user ON leads.user_id = user.userId
-                  WHERE user.userid = '$userid' AND leads.del_status != 'Deleted'
+                  LEFT JOIN `team` ON `user`.team_Id = team.teamId
+                  WHERE leads.del_status != 'Deleted' And `user`.team_Id = $teamId
                   ORDER BY leads.id DESC";
                                     }
 
@@ -360,41 +362,40 @@ if (
             </script>
 
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-           
+
 
             <script>
-    const tableContainer = document.querySelector('.table-responsive');
+                const tableContainer = document.querySelector('.table-responsive');
 
-let isDown = false;
-let startX;
-let scrollLeft;
+                let isDown = false;
+                let startX;
+                let scrollLeft;
 
-tableContainer.addEventListener('mousedown', (e) => {
-    isDown = true;
-    tableContainer.classList.add('active');
-    startX = e.pageX - tableContainer.offsetLeft;
-    scrollLeft = tableContainer.scrollLeft;
-});
+                tableContainer.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    tableContainer.classList.add('active');
+                    startX = e.pageX - tableContainer.offsetLeft;
+                    scrollLeft = tableContainer.scrollLeft;
+                });
 
-tableContainer.addEventListener('mouseleave', () => {
-    isDown = false;
-    tableContainer.classList.remove('active');
-});
+                tableContainer.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    tableContainer.classList.remove('active');
+                });
 
-tableContainer.addEventListener('mouseup', () => {
-    isDown = false;
-    tableContainer.classList.remove('active');
-});
+                tableContainer.addEventListener('mouseup', () => {
+                    isDown = false;
+                    tableContainer.classList.remove('active');
+                });
 
-tableContainer.addEventListener('mousemove', (e) => {
-    if (!isDown) return; // Stop the function if not holding mouse
-    e.preventDefault();
-    const x = e.pageX - tableContainer.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll-fast multiplier
-    tableContainer.scrollLeft = scrollLeft - walk;
-});
-
-</script>
+                tableContainer.addEventListener('mousemove', (e) => {
+                    if (!isDown) return; // Stop the function if not holding mouse
+                    e.preventDefault();
+                    const x = e.pageX - tableContainer.offsetLeft;
+                    const walk = (x - startX) * 2; // Scroll-fast multiplier
+                    tableContainer.scrollLeft = scrollLeft - walk;
+                });
+            </script>
 
 
 

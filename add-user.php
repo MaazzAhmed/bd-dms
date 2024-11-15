@@ -1,14 +1,16 @@
 <?php $TITLE = "Add User"; ?>
 
-<?php require_once("./main_components/header.php"); 
+<?php require_once("./main_components/header.php");
 
 
 
-if (!isset($_SESSION['role']) || 
-    ($_SESSION['role'] !== 'Admin' && 
-    $userPermissions['Add_user'] !== 'Allow')) {
-        echo "<script>window.location.href = 'index';</script>";
-        exit(); 
+if (
+    !isset($_SESSION['role']) ||
+    ($_SESSION['role'] !== 'Admin' &&
+        $userPermissions['Add_user'] !== 'Allow')
+) {
+    echo "<script>window.location.href = 'index';</script>";
+    exit();
 }
 
 
@@ -189,12 +191,15 @@ if (!isset($_SESSION['role']) ||
                                         // Display roles in dropdown
 
                                         $roles = getRoles($conn);
+                                        if ($_SESSION['role'] == 'Admin') {
 
-                                        foreach ($roles as $role) {
+                                            foreach ($roles as $role) {
 
-                                            echo "<option value='$role'>$role</option>";
+                                                echo "<option value='$role'>$role</option>";
+                                            }
+                                        } else {
+                                            echo "<option value='Executive'>Executive</option>";
                                         }
-
                                         ?>
 
                                     </select>
@@ -208,17 +213,33 @@ if (!isset($_SESSION['role']) ||
                                     <select id="inputTeam" name="teamId" class="form-select">
 
                                         <option selected disabled>Choose...</option>
-
                                         <?php
 
-                                        $teams = getTeams($conn);
+                                        if ($_SESSION['role'] == 'Admin') {
+                                            $teams = getTeams($conn);
+                                        } else {
+                                            $teamId = $_SESSION['team_id'];
+                                            $query = "SELECT team_name FROM team WHERE teamId = ?";
+                                            $stmt = mysqli_prepare($conn, $query);
 
-                                        foreach ($teams as $team) {
+                                            mysqli_stmt_bind_param($stmt, 'i', $teamId);
+                                            mysqli_stmt_execute($stmt);
+                                            $result = mysqli_stmt_get_result($stmt);
 
-                                            echo "<option value='" . $team['teamId'] . "'>" . $team['team_name'] . "</option>";
+
+                                            $userTeam = mysqli_fetch_assoc($result);
                                         }
-
                                         ?>
+
+                                        <?php if ($_SESSION['role'] == 'Admin') : ?>
+                                            <!-- Show all teams for Admin -->
+                                            <?php foreach ($teams as $team) : ?>
+                                                <option value="<?php echo $team['teamId']; ?>"><?php echo $team['team_name']; ?></option>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <!-- Show only the specific team for non-admin users -->
+                                            <option value="<?php echo $_SESSION['team_id']; ?>"><?php echo $userTeam['team_name']; ?></option>
+                                        <?php endif; ?>
 
                                     </select>
 
@@ -276,9 +297,9 @@ if (!isset($_SESSION['role']) ||
                                 <div class="col-md-6">
                                     <label for="inputContact" class="form-label">Brand Permission</label>
 
-                                    <select name="brandname[]" class="single-select form-control form-select" required id="inputCountry" multiple="multiple" >
+                                    <select name="brandname[]" class="single-select form-control form-select" required id="inputCountry" multiple="multiple">
 
-                                        <option disabled>Choose....</option> 
+                                        <option disabled>Choose....</option>
 
                                         <?php
                                         $brands = getBrands($conn);
@@ -289,7 +310,7 @@ if (!isset($_SESSION['role']) ||
 
                                     </select>
                                 </div>
-                               
+
                                 <div class="col-12">
 
                                     <label for="inputState" class="form-label">Permission</label>

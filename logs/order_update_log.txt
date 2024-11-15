@@ -63,3 +63,6 @@
 2024-10-26 16:28:40 -  Order updated for ID 43: order_id_input: 213 to 213, order_status: Follow up to Revision, writers_team: few to fewd, pending_payment_status: UnPaid to 
 2024-10-26 16:29:40 -  Order updated for ID 46: order_id_input: 222 to 222, payment_status: ----	 to ----, final_deadline_time: 2024-11-07 07:22:00 to 2024-11-07T07:22, pending_payment_status:  to 
 2024-10-26 16:30:03 -  Order updated for ID 46: order_id_input: 222 to 222, client_requirements: xyz to xyzs, pending_payment_status:  to 
+2024-10-28 15:35:28 -  Order updated for ID 44: order_id_input: 4230 to 4230, order_status: Follow up to File not received, final_deadline_time: 2024-11-01 02:52:00 to 2024-11-01T02:52, pending_payment_status: UnPaid to 
+2024-11-01 16:37:09 -  Order updated for ID 62: order_id_input: 342 to 342, order_status: Cancelled to Refund/Deadline, final_deadline_time: 2024-11-15 11:38:00 to 2024-11-15T11:38, pending_payment_status:  to 
+2024-11-01 18:22:31 -  Order updated for ID 62: order_id_input: 342 to 342, pending_payment_status:  to 

@@ -92,7 +92,7 @@ require_once("./main_components/header.php"); ?>
 
                                     <label for="inputState" class="form-label">Order Status:</label>
 
-                                    <select name="order_status" required id="inputState" class="form-select">
+                                    <select name="order_status" required id="inputState" class="form-select" onchange="toggleRefundFields()">
 
                                         <?php
 
@@ -112,6 +112,21 @@ require_once("./main_components/header.php"); ?>
                                     </select>
 
                                 </div>
+
+                                <div class="col-md-6" id="refundReasonField" style="display: none;">
+                                    <label for="inputFirstName" class="form-label">Reason Refund</label>
+                                    <input type="text" name="refund_reason" class="form-control" id="inputFirstName">
+                                </div>
+                                <div class="col-md-6" id="refundAmountField" style="display: none;">
+                                    <label for="inputFirstName" class="form-label">Refund Amount</label>
+                                    <input type="text" name="refund_amount" class="form-control" id="inputFirstName">
+                                </div>
+
+                                <div class="col-md-6" id="refundDateField" style="display: none;">
+                                    <label for="inputOrderConfirmation" class="form-label">Refund Date:</label>
+                                    <input type="date" name="refund_date" class="form-control" id="inputOrderConfirmation">
+                                </div>
+
 
                                 <div class="col-md-6">
 
@@ -146,7 +161,7 @@ require_once("./main_components/header.php"); ?>
 
                                 </div>
 
-                                
+
                                 <!-- <div class="col-md-6">
                                     <label for="inputRecievePayment" class="form-label">Pending Payment Status:</label>
                                     <select name="pending_payment_status" class="form-select" placeholder="Pending Payment Status" required id="inputCurrency">
@@ -156,7 +171,7 @@ require_once("./main_components/header.php"); ?>
                                     </select>
                                 </div> -->
 
-                                
+
                                 <div class="col-md-6">
 
                                     <label for="inputAccount" class="form-label">WhatsApp Account:</label>
@@ -328,7 +343,28 @@ require_once("./main_components/header.php"); ?>
 
 
 
+                    <script>
+    function toggleRefundFields() {
+        const orderStatus = document.getElementById('inputState').value;
+        const refundReasonField = document.getElementById('refundReasonField');
+        const refundAmountField = document.getElementById('refundAmountField');
+        const refundDateField = document.getElementById('refundDateField');
 
+        // Show fields only if order status is 'Refund' or 'Deadline'
+        if (orderStatus === 'Refund/Deadline') {
+            refundReasonField.style.display = 'block';
+            refundAmountField.style.display = 'block';
+            refundDateField.style.display = 'block';
+        } else {
+            refundReasonField.style.display = 'none';
+            refundAmountField.style.display = 'none';
+            refundDateField.style.display = 'none';
+        }
+    }
+
+    // Call function on page load to set the initial visibility
+    window.onload = toggleRefundFields;
+</script>
 
 
 

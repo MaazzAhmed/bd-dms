@@ -112,11 +112,17 @@ $shifts = getShift($conn); ?>
 
 
 
-                                        <?php foreach ($roles as $role) : ?>
+                                        <?php
+                                        if ($_SESSION['role'] == 'Admin') {
+                                            foreach ($roles as $role) : ?>
 
-                                            <option value="<?php echo $role; ?>" <?php echo ($editUserData['role'] == $role) ? 'selected' : ''; ?>><?php echo $role; ?></option>
+                                                <option value="<?php echo $role; ?>" <?php echo ($editUserData['role'] == $role) ? 'selected' : ''; ?>><?php echo $role; ?></option>
 
-                                        <?php endforeach; ?>
+                                        <?php endforeach;
+                                        } else {
+                                            echo "<option value='Executive'>Executive</option>";
+                                        }
+                                        ?>
 
                                     </select>
 
@@ -128,11 +134,34 @@ $shifts = getShift($conn); ?>
 
                                     <select id="inputTeam" name="team_Id" class="form-select">
 
-                                        <?php foreach ($teams as $team) : ?>
+                                        <?php
+                                        // Check if the user is an admin
+                                        if ($_SESSION['role'] == 'Admin') {
+                                            foreach ($teams as $team) : ?>
+                                                <!-- Display all teams for Admin, with selected option -->
+                                                <option value="<?php echo $team['teamId']; ?>" <?php echo ($editUserData['team_Id'] == $team['teamId']) ? 'selected' : ''; ?>>
+                                                    <?php echo $team['team_name']; ?>
+                                                </option>
+                                            <?php endforeach;
+                                        } else {
+                                            // Fetch the team name for the non-admin user
+                                            $teamId = $_SESSION['team_id'];
+                                            $query = "SELECT team_name FROM team WHERE teamId = ?";
+                                            $stmt = mysqli_prepare($conn, $query);
 
-                                            <option value="<?php echo $team['teamId']; ?>" <?php echo ($editUserData['team_Id'] == $team['teamId']) ? 'selected' : ''; ?>><?php echo $team['team_name']; ?></option>
+                                            mysqli_stmt_bind_param($stmt, 'i', $teamId);
+                                            mysqli_stmt_execute($stmt);
+                                            $result = mysqli_stmt_get_result($stmt);
 
-                                        <?php endforeach; ?>
+                                            // Fetch the team name for the current user
+                                            $userTeam = mysqli_fetch_assoc($result);
+                                            ?>
+                                            <!-- Display only the specific team for the non-admin user, with selected option -->
+                                            <option value="<?php echo $teamId; ?>" <?php echo ($editUserData['team_Id'] == $teamId) ? 'selected' : ''; ?>>
+                                                <?php echo $userTeam['team_name']; ?>
+                                            </option>
+                                        <?php } ?>
+
 
                                     </select>
 

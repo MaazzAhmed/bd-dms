@@ -707,64 +707,32 @@ if (!isset($_SESSION['role']) ||
                                         <option disabled selected>Choose....</option>
 
                                         <?php
-                                        // Fetch WhatsApp names and numbers
                                         $whatsapp = getWhatsapp($conn);
 
                                         foreach ($whatsapp as $whatsappd) {
-                                            // Combine the name and number into one string and trim any spaces
                                             $whatsappValue = trim($whatsappd['whatsapp_name'] . ' ' . $whatsappd['whatsapp_number']);
 
-                                            // Extract the country code and number (assuming the format is "CountryName Number")
                                             if (preg_match('/^(.*?)(\d{4,})$/', $whatsappValue, $matches)) {
-                                                // $matches[1] contains the country code and $matches[2] contains the number
                                                 $countryCode = $matches[1];
                                                 $number = $matches[2];
 
-                                                // Mask all but the last 3 digits of the number
                                                 $maskedNumber = str_repeat('*', strlen($number) - 3) . substr($number, -3);
 
-                                                // Create the masked WhatsApp value
                                                 $maskedWhatsappValue = $countryCode . ' ' . $maskedNumber;
                                             } else {
-                                                // Fallback in case the format is unexpected
                                                 $maskedWhatsappValue = $whatsappValue;
                                             }
 
-                                            // Check if this option should be selected (if $leadSourceData is available)
                                             $leadWhatsapp = isset($leadSourceData) ? trim($leadSourceData['whatsapp_name'] . ' ' . $leadSourceData['whatsapp_number']) : '';
                                             $selected = ($whatsappValue === $leadWhatsapp) ? 'selected' : '';
 
-                                            // Output the option with the masked number
                                             echo "<option value='$whatsappValue' $selected>$maskedWhatsappValue</option>";
                                         }
                                         ?>
                                     </select>
                                 </div>
 
-                                <!-- <div class="col-md-6">
-
-                                    <label for="inputContact" class="form-label">Whatsapp Number</label>
-
-                                    <select name="whatsappnumber" class="form-select" required id="inputCountry">
-
-                                        <option disabled selected>Choose....</option>
-
-                                        <?php
-
-                                        // Display roles in dropdown
-
-                                        $whatsapp = getWhatsapp($conn);
-
-                                        foreach ($whatsapp as $whatsappd) {
-
-                                            echo "<option value='" . $whatsappd['whatsapp_number'] . "'>" . $whatsappd['whatsapp_number'] . "</option>";
-                                        }
-
-                                        ?>
-
-                                    </select>
-
-                                </div> -->
+                        
                                 <div class="col-md-6">
                                     <label for="inputContact" class="form-label">Lead Source</label>
                                     <select name="lsource" class="form-select" required id="inputLeadSource" onchange="checkLeadSource()">
@@ -806,8 +774,6 @@ if (!isset($_SESSION['role']) ||
                         </div>
 
                     </div>
-
-
 
 
 

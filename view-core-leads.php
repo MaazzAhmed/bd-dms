@@ -130,8 +130,7 @@ if (
                                     $leads = array();
                                     $userid = $_SESSION['id'];
                                     $role = $_SESSION['role'];
-
-
+                                    $teamId = $_SESSION['team_id'] ?? '';
 
                                     if ($role == 'Admin') {
                                         $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
@@ -165,7 +164,9 @@ if (
                                         $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
                   FROM core_leads
                   LEFT JOIN user ON core_leads.user_id = user.userId
-                  WHERE user.userId = '$userid' AND core_leads.del_status != 'Deleted'
+                  LEFT JOIN `team` ON `user`.team_Id = team.teamId
+
+                  WHERE core_leads.del_status != 'Deleted' And `user`.team_Id = $teamId
                   ORDER BY core_leads.id DESC";
                                     }
 

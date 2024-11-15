@@ -38,39 +38,69 @@ function getRoles($conn)
 
 // Function to get users from the database with related information
 
-function getUsers($conn)
-{
+// function getUsers($conn)
+// {
 
+//     $users = array();
+
+//     $query = "SELECT userId, name, email, role, team_name, shift_type, start_timing, end_timing, system_status
+
+//               FROM user 
+
+//               LEFT JOIN team ON user.team_Id = team.teamId
+
+//               LEFT JOIN shift ON user.shift_id = shift.shiftId 
+//               WHERE user.del_status != 'Deleted'
+
+//               ORDER BY userId DESC";
+
+//     $result = mysqli_query($conn, $query);
+
+
+//     if (!$result) {
+//         die("Query failed: " . mysqli_error($conn));  // Display the error message
+//     }
+
+//     while ($row = mysqli_fetch_assoc($result)) {
+//         $users[] = $row;
+//     }
+
+//     // while ($row = mysqli_fetch_assoc($result)) {
+
+//     //     $users[] = $row;
+//     // }
+
+
+
+//     return $users;
+// }
+function getUsers($conn, $userRole, $userTeamId)
+{
     $users = array();
 
+    // Base query
     $query = "SELECT userId, name, email, role, team_name, shift_type, start_timing, end_timing, system_status
-
-              FROM user 
-
+              FROM user
               LEFT JOIN team ON user.team_Id = team.teamId
+              LEFT JOIN shift ON user.shift_id = shift.shiftId
+              WHERE user.del_status != 'Deleted'";
 
-              LEFT JOIN shift ON user.shift_id = shift.shiftId 
-              WHERE user.del_status != 'Deleted'
+    // If the user is not an Admin, restrict the results to their team
+    if ($userRole !== 'Admin') {
+        $query .= " AND user.team_Id = $userTeamId";
+    }
 
-              ORDER BY userId DESC";
+    $query .= " ORDER BY userId DESC"; // Ordering by userId
 
     $result = mysqli_query($conn, $query);
 
-
     if (!$result) {
-        die("Query failed: " . mysqli_error($conn));  // Display the error message
+        die("Query failed: " . mysqli_error($conn));
     }
 
     while ($row = mysqli_fetch_assoc($result)) {
         $users[] = $row;
     }
-
-    // while ($row = mysqli_fetch_assoc($result)) {
-
-    //     $users[] = $row;
-    // }
-
-
 
     return $users;
 }
@@ -2079,6 +2109,9 @@ if (isset($_POST['create-order'])) {
 
     $receive_payment = $_POST['receive_payment'];
 
+    $total_payment = (string)($pending_payment + $receive_payment);
+
+
     $currency = $_POST['currency'];
 
     $whatsapp_account = $_POST['whatsapp_account'];
@@ -2111,8 +2144,7 @@ if (isset($_POST['create-order'])) {
 
     $creator_name = $_POST['creator_name'];
 
-
-
+    
     // Insert data into `order` table
 
     $sql = "INSERT INTO `order` (
@@ -2136,16 +2168,18 @@ if (isset($_POST['create-order'])) {
         $orderid = mysqli_insert_id($conn);  // Get the inserted order's ID
 
         // Insert into `order_payments` table
-        $sql2 = "INSERT INTO `order_payments` (pending_payment, receive_payment, month, currency, payment_date, order_id) 
-                 VALUES ($pending_payment, $receive_payment, '$order_confirmation_month', '$currency', '$order_confirmation_date', $orderid)";
+        $sql2 = "INSERT INTO `order_payments` (pending_payment, receive_payment, month, currency, payment_date, total_payment, order_id, year) 
+         VALUES ($pending_payment, $receive_payment, '$order_confirmation_month', '$currency', '$order_confirmation_date', $total_payment, $orderid, $year)";
+
 
         if ($conn->query($sql2) === TRUE) {
             // Log order creation
             $logMessage = "$creator_name Created The Order - Order ID: $order_id_input, Order Title: $order_title";
             $logFileName = 'order_created_log.txt';
             customLogToFile($logMessage, $logFileName);
-
-            // Redirect and set success message
+          
+        
+            // // Redirect and set success message
             $_SESSION['CreateOrder'] = 'Order created successfully!';
             header("Location: view-orders");
             exit();
@@ -2165,16 +2199,18 @@ if (isset($_POST['add_payment'])) {
     $receive_payment =  $_POST['receive_payment'];
     $pending_payment =  $_POST['pending_payment']; // Fetch the original pending payment from the hidden input
     $new_pending_payment = $pending_payment - $receive_payment;
-
+    $total_payment = $_POST['total_payment'];
+   
     $currency = $_POST['currency'];
     $order_confirmation_date = date("Y-m-d", strtotime($_POST['order_confirmation_date']));
     $order_confirmation_month = date("F", strtotime($_POST['order_confirmation_date']));
+    $year = date("Y", strtotime($_POST['order_confirmation_date']));
 
-    $sql = "INSERT INTO order_payments(pending_payment, receive_payment, currency, month, payment_date, order_id)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO order_payments(pending_payment, receive_payment, currency, month, year, payment_date,total_payment, order_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("sssssi", $new_pending_payment, $receive_payment, $currency, $order_confirmation_month, $order_confirmation_date, $order_id);
+        $stmt->bind_param("sssssssi", $new_pending_payment, $receive_payment, $currency, $order_confirmation_month, $year, $order_confirmation_date, $total_payment, $order_id);
 
         if ($stmt->execute()) {
             $_SESSION['Createpayment'] = "Payment added successfully!";
@@ -2191,16 +2227,22 @@ if (isset($_POST['add_payment'])) {
 // End add payment
 
 // Start VIew PAyments
-if ( isset($_POST['view-payment'])) {
+// Start VIew Payments
+if (isset($_POST['view-payment'])) {
     $orderId = $_POST['order_id'];
 
-    // Prepare and execute the SQL query to fetch payment details
-    $stmt = $conn->prepare("SELECT `id`, `pending_payment`, `receive_payment`, `month`, `currency`, `payment_date` FROM `order_payments` WHERE `order_id` = ?");
-    $stmt->bind_param("s", $orderId); // Assuming order_id is a string
+    // Correct SQL query to select relevant fields properly
+    $stmt = $conn->prepare("
+        SELECT 
+            `id`, `pending_payment`, `receive_payment`, `month`, `currency`, 
+            `payment_date`, `total_payment`, `upscale`, `before_upscale`, `order_id` 
+        FROM `order_payments` 
+        WHERE `order_id` = ? AND `del_status` != 'Deleted'
+    ");
+    $stmt->bind_param("s", $orderId);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Fetch the payment details
     $paymentDetails = [];
     while ($row = $result->fetch_assoc()) {
         $paymentDetails[] = $row;
@@ -2209,6 +2251,87 @@ if ( isset($_POST['view-payment'])) {
     $stmt->close();
 }
 
+// End View Payments
+
+// Handle Adding or Updating Upscale
+if (isset($_POST['add_upscale'])) {
+    $orderId = $_POST['orderId'];
+    $upscaleAmount = $_POST['upscale'];
+
+    $newPayment = $_POST['total_payment'];
+    $beforeUpscale = $_POST['before_upscale'];
+    
+    $totalPayment = $newPayment + $_POST['before_upscale'];
+
+    $stmt = $conn->prepare("UPDATE `order_payments` SET `before_upscale` = ?, `total_payment` = ?, `upscale` = ? WHERE `order_id` = ? AND `del_status` != 'Deleted'");
+    $stmt->bind_param("ssss", $beforeUpscale, $totalPayment, $upscaleAmount, $orderId);
+
+    if ($stmt->execute()) {
+        $_SESSION['upscaleAdded'] = 'Upsale added successfully!';
+        header("Location: view-orders");
+        exit();
+    } else {
+        $_SESSION['upscaleError'] = 'Failed to add upscale.';
+    }
+
+    $stmt->close();
+}
+// Start Update upsale
+if (isset($_POST['update_upsale'])) {
+    
+    $orderId = $_POST['orderId'];
+    $before_upscale = (float)$_POST['before_upscale'];
+    $upscale_amount = (float)$_POST['total_payment']; 
+    
+    $new_total_payment = $before_upscale + $upscale_amount;
+
+    
+    $stmt = $conn->prepare("UPDATE `order_payments` 
+                            SET `before_upscale` = ?, `total_payment` = ? 
+                            WHERE `order_id` = ? AND `del_status` != 'Deleted'");
+
+    
+    $stmt->bind_param("dsi", $before_upscale, $new_total_payment, $orderId);
+
+    if ($stmt->execute()) {
+        $_SESSION['payUpd'] = 'Upsale updated successfully.';
+        header("Location: view-orders");
+        exit(); 
+    } else {
+        $_SESSION['payUpd'] = 'Failed to update Upsale.';
+    }
+
+    
+    $stmt->close();
+}
+// Start Update Payment
+if (isset($_POST['update_payment'])) {
+    $paymentId = $_POST['payment_id'];
+    $orderId = $_POST['orderId'];
+    $pendingPayment = $_POST['pending_payment'];
+    $receivePayment = $_POST['receive_payment'];
+    $month = $_POST['month'];
+    $currency = $_POST['currency'];
+    $paymentDate = $_POST['payment_date'];
+
+    $stmt = $conn->prepare("UPDATE `order_payments` SET `pending_payment` = ?, `receive_payment` = ?, `month` = ?, `currency` = ?, `payment_date` = ? WHERE `id` = ? AND `del_status` != 'Deleted'");
+    $stmt->bind_param("sssssi", $pendingPayment, $receivePayment, $month, $currency, $paymentDate, $paymentId);
+
+    if ($stmt->execute()) {
+        $_SESSION['payUpd'] = 'Payment updated successfully.';
+        header("Location: view-orders");
+        exit(); 
+
+        
+    } else {
+        $_SESSION['payUpd'] = 'Failed to update payment.';
+
+    }
+
+    $stmt->close();
+}
+
+// ENd Update Payment
 // Start Convert core leads
 
 if (isset($_POST['create-corelead-order'])) {
@@ -2223,7 +2346,6 @@ if (isset($_POST['create-corelead-order'])) {
 
         date_default_timezone_set('Asia/Karachi');
 
-        // Assign fetched values to variables
         $campId = $row["campId"];
         $clientName = $row["client_name"];
         $clientContactNumber = $row["client_contact_number"];
@@ -2632,6 +2754,13 @@ if (isset($_POST['update-order'])) {
     $comment = $_POST['comment'];
     $client_requirements = $_POST['client_requirements'];
     $pending_payment_status = $_POST['pending_payment_status'];
+    
+    $refund_reason = $_POST['refund_reason'];
+    $refund_date = date("Y-m-d", strtotime($_POST['refund_date']));
+
+    $refund_month = date("F", strtotime($_POST['refund_date']));
+    $refund_year = date("Y", strtotime($_POST['refund_date']));
+    $refund_amount = $_POST['refund_amount'];
 
     // Retrieve current order information from the database
     $currentOrderInfo = getOrderInfo($order_id);
@@ -2670,130 +2799,44 @@ if (isset($_POST['update-order'])) {
         customLogToFile($logMessage, $logFileName);
     }
 
-    // Check if pending payment status is 'Paid'
-    if ($pending_payment_status == 'Paid') {
-        // Get the current month
-        $current_month = date('F');
-        // Update data in the order table
-        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, comment = ?, client_requirements = ?, pending_payment_Month = ? WHERE orderId = ?";
-        $stmtUpdateOrder = mysqli_prepare($conn, $updateOrderQuery);
-        if ($stmtUpdateOrder) {
-            mysqli_stmt_bind_param(
-                $stmtUpdateOrder,
-                "sssssssssssssssssi",
-                $order_id_input,
-                $order_title,
-                $order_status,
-                $payment_status,
-                $word_count,
-                $whatsapp_account,
-                $payment_account,
-                $portal_due_date,
-                $final_deadline_time,
-                $order_confirmation_date,
-                $pending_payment_status,
-                $writers_team,
-                $plan,
-                $assigned_to,
-                // $years,
-                $comment,
-                $client_requirements,
-                $current_month,
-                $order_id
-            );
-            if (mysqli_stmt_execute($stmtUpdateOrder)) {
-                $_SESSION['eorder'] = "Order updated successfully.";
-                header('Location: view-orders');
-            } else {
-                $_SESSION['eorder'] = "Error updating order: " . mysqli_error($conn);
+    // Preparing the order update query
+    $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, comment = ?, client_requirements = ? WHERE orderId = ?";
+    $stmtUpdateOrder = mysqli_prepare($conn, $updateOrderQuery);
+    if ($stmtUpdateOrder) {
+        mysqli_stmt_bind_param(
+            $stmtUpdateOrder,
+            "ssssssssssssssssi",
+            $order_id_input, $order_title, $order_status, $payment_status, $word_count, 
+            $whatsapp_account, $payment_account, $portal_due_date, $final_deadline_time, 
+            $order_confirmation_date, $pending_payment_status, $writers_team, $plan, 
+            $assigned_to, $comment, $client_requirements, $order_id
+        );
+        if (mysqli_stmt_execute($stmtUpdateOrder)) {
+            $_SESSION['eorder'] = "Order updated successfully.";
+            
+            // Insert into refund_orders if order status is 'Refund/Deadline'
+            if ($order_status === 'Refund/Deadline') {
+                $insertRefundQuery = "INSERT INTO refund_orders (reason_refund, amount, month, year, date, order_id) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmtInsertRefund = mysqli_prepare($conn, $insertRefundQuery);
+                if ($stmtInsertRefund) {
+                    mysqli_stmt_bind_param($stmtInsertRefund, "sssssi", $refund_reason, $refund_amount, $refund_month, $refund_year, $refund_date, $order_id);
+                    mysqli_stmt_execute($stmtInsertRefund);
+                    mysqli_stmt_close($stmtInsertRefund);
+                }
             }
-            mysqli_stmt_close($stmtUpdateOrder);
+            
+            header('Location: view-orders');
         } else {
-            $_SESSION['eorder'] = "Error preparing update statement: " . mysqli_error($conn);
+            $_SESSION['eorder'] = "Error updating order: " . mysqli_error($conn);
         }
+        mysqli_stmt_close($stmtUpdateOrder);
     } else {
-        // Update data in the order table
-        $updateOrderQuery = "UPDATE `order` SET order_id_input=?, order_title = ?, order_status = ?, payment_status = ?, word_count = ?, whatsapp_account = ?, payment_account = ?, portal_due_date = ?, final_deadline_time = ?, order_confirmation_date = ?, pending_payment_status = ?, writers_team = ?, plan = ?, assigned_to = ?, comment = ?, client_requirements = ? WHERE orderId = ?";
-        $stmtUpdateOrder = mysqli_prepare($conn, $updateOrderQuery);
-        if ($stmtUpdateOrder) {
-            mysqli_stmt_bind_param(
-                $stmtUpdateOrder,
-                "ssssssssssssssssi",
-                $order_id_input,
-                $order_title,
-                $order_status,
-                $payment_status,
-                $word_count,
-                $whatsapp_account,
-                $payment_account,
-                $portal_due_date,
-                $final_deadline_time,
-                $order_confirmation_date,
-                $pending_payment_status,
-                $writers_team,
-                $plan,
-                $assigned_to,
-                // $years,
-                $comment,
-                $client_requirements,
-                $order_id
-            );
-            if (mysqli_stmt_execute($stmtUpdateOrder)) {
-                $_SESSION['eorder'] = "Order updated successfully.";
-                header('Location: view-orders');
-            } else {
-                $_SESSION['eorder'] = "Error updating order: " . mysqli_error($conn);
-            }
-            mysqli_stmt_close($stmtUpdateOrder);
-        } else {
-            $_SESSION['eorder'] = "Error preparing update statement: " . mysqli_error($conn);
-        }
+        $_SESSION['eorder'] = "Error preparing update statement: " . mysqli_error($conn);
     }
 }
 
 // Start Delete Order
 
-// if (isset($_POST['delete_order'])) {
-
-//     $order_id = $_POST['order_id'];
-//     $deleted_name = $_POST['deleted_name'];
-//     $order_title = $_POST['order_title'];
-//     $del_status = "Deleted";
-//     // Retrieve order information before deletion
-//     $orderInfo = getOrderInfo($order_id);
-//     // Delete the order from the database
-//     $deleteQuery = "UPDATE `order`  SET del_status = ?   WHERE orderId = ?";
-
-//     $stmt = mysqli_prepare($conn, $deleteQuery);
-
-//     if ($stmt) {
-//         mysqli_stmt_bind_param($stmt, "si", $del_status, $order_id);
-//         // Log the order deletion
-
-//         $logMessage = "Order deleted for ID $order_id: ";
-
-//         $logChanges = [];
-
-//         // Include relevant information in the log
-//         $logChanges[] = "Order Title: {$order_title}";
-//         // Add more fields as needed
-//         $logMessage .= implode(", ", $logChanges);
-//         $logFileName = 'order_delete_log.txt';
-//         customLogToFile($logMessage, $logFileName);
-//         // Execute the deletion
-
-//         if (mysqli_stmt_execute($stmt)) {
-//             $_SESSION['dorder'] = 'Order deleted successfully!.';
-//         } else {
-
-//             $_SESSION['dorder'] =  "Error executing deletion: " . mysqli_error($conn);
-//         }
-//         mysqli_stmt_close($stmt);
-//     } else {
-
-//         $_SESSION['dorder'] = "Error preparing delete statement: " . mysqli_error($conn);
-//     }
-// }
 if (isset($_POST['action']) && $_POST['action'] === 'delete_order' && isset($_POST['order_id']) && isset($_POST['inputKey'])) {
     $order_id = $_POST['order_id'];
     $inputKey = $_POST['inputKey'];
@@ -2822,6 +2865,12 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_order' && isset($_PO
 
             // Execute the deletion
             if (mysqli_stmt_execute($stmt)) {
+
+                $deleteOrderPaymentQuery = "UPDATE `order_payments` SET del_status = ? WHERE order_id = ?";
+                $stmt2 = mysqli_prepare($conn, $deleteOrderPaymentQuery);
+                mysqli_stmt_bind_param($stmt2, "si", $del_status, $order_id);
+                mysqli_stmt_execute($stmt2);
+                mysqli_stmt_close($stmt2); 
                 // Log order deletion
                 $logMessage = "Order deleted for Order ID $order_id by $deleted_name: Order Title: $order_title";
                 $logFileName = '../logs/order_delete_log.txt';

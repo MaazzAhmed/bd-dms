@@ -61,7 +61,13 @@ if (!isset($_SESSION['role']) ||
             }
 
             ?>
+<?php
+// Assume these session variables are set when the user logs in
+$userRole = $_SESSION['role'];
+$teamId = $_SESSION['team_id'] ?? '';
 
+$users = getUsers($conn, $userRole, $teamId);
+?>
             <div class="card">
 
                 <div class="card-body">
@@ -88,28 +94,25 @@ if (!isset($_SESSION['role']) ||
 
                                     <th>Status</th>
                                     <?php
-                                    if ($_SESSION['role'] == 'Admin') {
+                                    if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager') {
 
                                     ?>
 
                                         <th>Edit</th>
+                                        <?php } 
+                                         if ($_SESSION['role'] == 'Admin'){
+                                        ?>
 
                                         <th>Delete</th>
-                                    <?php } ?>
-
+<?php } ?>
                                 </tr>
 
                             </thead>
 
                             <tbody>
 
-                                <?php
+                            <?php foreach ($users as $user) : ?>
 
-                                // View Users
-
-                                $users = getUsers($conn);
-
-                                foreach ($users as $user) : ?>
 
                                     <tr>
 
@@ -129,7 +132,7 @@ if (!isset($_SESSION['role']) ||
 
 
                                         <?php
-                                        if ($_SESSION['role'] == 'Admin') {
+                                        if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager') {
 
                                         ?>
                                             <form method="post" action="edit-user">
@@ -159,6 +162,9 @@ if (!isset($_SESSION['role']) ||
                                                 </td>
 
                                             </form>
+                                            <?php }
+                                            if ($_SESSION['role'] == 'Admin'){
+                                            ?>
 
                                             <form method="post" action="" id="deleteUserForm_<?php echo $user['userId']; ?>" onsubmit="return false;">
                                                 <input type="hidden" name="userId" value="<?php echo $user['userId']; ?>">

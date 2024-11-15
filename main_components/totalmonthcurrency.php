@@ -38,7 +38,7 @@ function sumAndConvertCurrency($ipFilter, $monthFilter, $yearFilter)
         $currency = $row['currency'];
 
         // Convert both received and pending amounts (use your existing conversion logic)
-        $api_key = 'YOUR_API_KEY'; // Replace with actual API key
+        $api_key = '613fbda0d10281547b0c8839'; // Replace with actual API key
         $api_url = "https://open.er-api.com/v6/latest?base={$currency}&apikey={$api_key}";
 
         $response = file_get_contents($api_url);

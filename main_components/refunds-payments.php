@@ -33,10 +33,12 @@ if ($_SESSION['role'] == 'Admin') {
             recent_payments.receive_payment AS latest_received,
                recent_payments.pending_payment AS latest_pending,
                recent_payments.currency AS currency,
-               recent_payments.total_payment AS total_payment   
+               recent_payments.total_payment AS total_payment,
+               refund_orders.reason_refund, refund_orders.amount AS refund_amount, refund_orders.month AS refund_month, refund_orders.year AS refund_year, refund_orders.date as refund_date   
             FROM `order`
             LEFT JOIN user ON `order`.user_id = user.userId
             LEFT JOIN leads ON `order`.lead_id = leads.id
+            LEFT JOIN refund_orders ON `order`.orderId = refund_orders.order_id
                LEFT JOIN (
                 SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
                 FROM order_payments op1
@@ -49,7 +51,36 @@ if ($_SESSION['role'] == 'Admin') {
                 AND op1.timestamp = op2.max_timestamp
                 WHERE op1.del_status != 'Deleted'
             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
-            WHERE order.del_status != 'Deleted'";
+            WHERE order.del_status != 'Deleted' AND order.order_status = 'Refund/Deadline'";
+} elseif ($_SESSION['role'] == 'Manager') {
+    $sql = "SELECT `order`.*, user.name, user.team_Id, 
+    leads.campId, leads.client_name, leads.client_contact_number, 
+    leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
+    recent_payments.receive_payment AS latest_received,
+       recent_payments.pending_payment AS latest_pending,
+       recent_payments.currency AS currency,
+       recent_payments.total_payment AS total_payment,
+       refund_orders.reason_refund, refund_orders.amount AS refund_amount, refund_orders.month, refund_orders.year AS refund_year, refund_orders.date    
+    FROM `order`
+    LEFT JOIN user ON `order`.user_id = user.userId
+    LEFT JOIN leads ON `order`.lead_id = leads.id
+    LEFT JOIN refund_orders ON `order`.orderId = refund_orders.order_id
+                      LEFT JOIN `team` ON `user`.team_Id = team.teamId
+
+
+     LEFT JOIN (
+        SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
+        FROM order_payments op1
+        INNER JOIN (
+            SELECT order_id, MAX(timestamp) AS max_timestamp
+            FROM order_payments
+            WHERE del_status != 'Deleted'
+            GROUP BY order_id
+        ) op2 ON op1.order_id = op2.order_id 
+        AND op1.timestamp = op2.max_timestamp
+        WHERE op1.del_status != 'Deleted'
+    ) AS recent_payments ON `order`.orderId = recent_payments.order_id
+    WHERE `user`.team_Id = '$teamId' AND order.del_status != 'Deleted' AND order.order_status = 'Refund/Deadline'";
 } else {
     $sql = "SELECT `order`.*, user.name, user.team_Id, 
             leads.campId, leads.client_name, leads.client_contact_number, 
@@ -57,11 +88,13 @@ if ($_SESSION['role'] == 'Admin') {
             recent_payments.receive_payment AS latest_received,
                recent_payments.pending_payment AS latest_pending,
                recent_payments.currency AS currency,
-               recent_payments.total_payment AS total_payment   
+               recent_payments.total_payment AS total_payment,
+               refund_orders.reason_refund, refund_orders.amount AS refund_amount, refund_orders.month, refund_orders.year AS refund_year, refund_orders.date    
             FROM `order`
             LEFT JOIN user ON `order`.user_id = user.userId
             LEFT JOIN leads ON `order`.lead_id = leads.id
-            LEFT JOIN `team` ON `user`.team_Id = team.teamId
+            LEFT JOIN refund_orders ON `order`.orderId = refund_orders.order_id
+
              LEFT JOIN (
                 SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
                 FROM order_payments op1
@@ -74,33 +107,8 @@ if ($_SESSION['role'] == 'Admin') {
                 AND op1.timestamp = op2.max_timestamp
                 WHERE op1.del_status != 'Deleted'
             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
-            WHERE `user`.team_Id = $teamId AND order.del_status != 'Deleted'";
+            WHERE user.userId = '$userid' AND order.del_status != 'Deleted' AND order.order_status = 'Refund/Deadline'";
 }
-//  else {
-//     $sql = "SELECT `order`.*, user.name, user.team_Id, 
-//             leads.campId, leads.client_name, leads.client_contact_number, 
-//             leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
-//             recent_payments.receive_payment AS latest_received,
-//                recent_payments.pending_payment AS latest_pending,
-//                recent_payments.currency AS currency,
-//                recent_payments.total_payment AS total_payment   
-//             FROM `order`
-//             LEFT JOIN user ON `order`.user_id = user.userId
-//             LEFT JOIN leads ON `order`.lead_id = leads.id
-//              LEFT JOIN (
-//                 SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
-//                 FROM order_payments op1
-//                 INNER JOIN (
-//                     SELECT order_id, MAX(timestamp) AS max_timestamp
-//                     FROM order_payments
-//                     WHERE del_status != 'Deleted'
-//                     GROUP BY order_id
-//                 ) op2 ON op1.order_id = op2.order_id 
-//                 AND op1.timestamp = op2.max_timestamp
-//                 WHERE op1.del_status != 'Deleted'
-//             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
-//             WHERE user.userId = '$userid' AND order.del_status != 'Deleted'";
-// }
 
 // Apply filters based on user input
 if (!empty($ipFilter)) {
@@ -125,10 +133,10 @@ if (!empty($orderStatus)) {
     $sql .= " AND order.order_status = '$orderStatus'";
 }
 if (!empty($month)) {
-    $sql .= " AND order.order_confirmation_month = '$month'";
+    $sql .= " AND refund_orders.month = '$month'";
 }
 if (!empty($year)) {
-    $sql .= " AND order.year = '$year'";
+    $sql .= " AND refund_orders.year = '$year'";
 }
 if (!empty($leadsource)) {
     $sql .= " AND leads.lead_source = '$leadsource'";
@@ -204,29 +212,18 @@ if ($result->num_rows > 0) {
         echo "<td>{$row['client_name']}</td>";
         echo "<td>{$row['client_email']}</td>";
         echo "<td>{$row['client_contact_number']}</td>";
+
+
+        echo "<td>{$row['reason_refund']}</td>";
+        echo "<td>{$row['refund_amount']}</td>";
+        echo "<td>" . date("j-M-Y", strtotime($row['refund_date'])) . "</td>";
+
         echo "<td>" . date("j-M-Y", strtotime($row['order_confirmation_date'])) . "</td>";
-        echo "<td>" . date("d-M-Y h:i a", strtotime($row['portal_due_date'])) . "</td>";
-        echo '<td' . ($isTodayDeadline ? ' style="background-color: red;"' : '') . '>' . date('d-M-Y h:i a', strtotime($row['final_deadline_time'])) . '</td>';
         echo "<td data-bs-toggle='tooltip' data-bs-placement='top' title='{$row['comment']}'>{$row['order_id_input']}</td>";
         echo "<td>{$row['order_title']}</td>";
-        if ($row['order_status'] == 'Follow up') {
-            echo "<td style='background-color: #e6b8af;'><span class='badge' style='background-color: #e6b8af;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'Revision') {
-            echo "<td style='background-color: #9bbb59;'><span class='badge' style='background-color: #9bbb59;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'File not received') {
-            echo "<td style='background-color: #ff00ff;'><span class='badge' style='background-color: #ff00ff;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'Refund/Deadline') {
-            echo "<td style='background-color: Red;'><span class='badge' style='background-color: Red;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'Half Payment') {
-            echo "<td style='background-color: Black;color:white;'><span class='badge' style='background-color: Black;color:white;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'Converted') {
-            echo "<td  style='background-color: #320f99;'><span class='badge' style='background-color: #320f99;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'Delivered') {
-            echo "<td style='background-color: #00ffff;'><span class='badge' style='background-color: #00ffff;'>{$row['order_status']}</span></td>";
-        } elseif ($row['order_status'] == 'cancelled') {
-            echo "<td style='background-color: #ff1313;'><span class='badge' style='background-color: #00ffff;'>{$row['order_status']}</span></td>";
-        }
-         else {
+        if ($row['order_status'] == 'Refund/Deadline') {
+            echo "<td style='background-color: Red;'>{$row['order_status']}</td>";
+        } else {
             echo "<td>{$row['order_status']}</td>";
         }
         echo "<td>{$row['word_count']}</td>";
@@ -247,51 +244,48 @@ if ($result->num_rows > 0) {
         echo "<td>{$row['brand_name']}</td>";
 
 
-        echo "<td>
-        <form method='post' action='add-payment'>
-       <input type='hidden' name='order_id' value='{$row['orderId']}'>
-       <button type='submit' class='btn btn-warning dm' name='add-payment'><i class='bx bx-plus dmd'>Payment</i></button>
-   </form>  </td>";
 
-        //          echo "<td>
-        //         <form method='post' action='view-payments'>
+        //         echo "<td>
+        //         <form method='post' action='add-payment'>
         //        <input type='hidden' name='order_id' value='{$row['orderId']}'>
-        //        <button type='submit' class='btn btn-success dm' name='view-payment'><i class='fa fa-eye dmd'>Payment</i></button>
-        //    </form> </td>";
+        //        <button type='submit' class='btn btn-warning dm' name='add-payment'><i class='bx bx-plus dmd'>Payment</i></button>
+        //    </form>  </td>";
+
+
         echo "<td>
          <form method='post' action='view-payments'>
                 <input type='hidden' name='order_id' value='{$row['orderId']}'>
                 <button type='submit' class='btn btn-success dm' name='view-payment'><i class='fa fa-eye dmd'>Payment</i></button>
             </form> 
      </td>";
-     
-     
 
 
-        echo "<td class='mt-4'><a href='#invoiceModal' class='open-invoice btn btn-secondary' data-invoice-id='{$row['lead_id']}' data-toggle='modal'>Template</a>
-
-        </td>";
 
 
-        echo "<td>
-         <form method='post' action='edit-order'>
-        <input type='hidden' name='order_id' value='{$row['orderId']}'>
-        <button type='submit' class='btn btn-info ' name='edit_order'>Edit</button>
-    </form> </td>";
-        if ($_SESSION['role'] == 'Admin') {
-            echo "<td>
-            <form method='post' action='' id='deleteOrderForm_{$row['orderId']}' onsubmit='return false;'>
-                <input type='hidden' name='order_id' value='{$row['orderId']}'>
-                <input type='hidden' name='deleted_name' value='{$_SESSION['user']}'>
-                <input type='hidden' name='order_title' value='{$row['order_title']}'>
-                <button type='button' class='btn btn-danger' onclick='confirmKeyAndDeleteOrder({$row['orderId']})'>Delete</button>
-            </form>
-        </td>";
-        }
+        // echo "<td class='mt-4'><a href='#invoiceModal' class='open-invoice btn btn-secondary' data-invoice-id='{$row['lead_id']}' data-toggle='modal'>Template</a>
+
+        // </td>";
+
+
+        //     echo "<td>
+        //      <form method='post' action='edit-order'>
+        //     <input type='hidden' name='order_id' value='{$row['orderId']}'>
+        //     <button type='submit' class='btn btn-info ' name='edit_order'>Edit</button>
+        // </form> </td>";
+        // if ($_SESSION['role'] == 'Admin') {
+        //     echo "<td>
+        //     <form method='post' action='' id='deleteOrderForm_{$row['orderId']}' onsubmit='return false;'>
+        //         <input type='hidden' name='order_id' value='{$row['orderId']}'>
+        //         <input type='hidden' name='deleted_name' value='{$_SESSION['user']}'>
+        //         <input type='hidden' name='order_title' value='{$row['order_title']}'>
+        //         <button type='button' class='btn btn-danger' onclick='confirmKeyAndDeleteOrder({$row['orderId']})'>Delete</button>
+        //     </form>
+        // </td>";
+        // }
         echo "<td>
         <form action='view-all-orders' method='post'>
         <input type='hidden' name='allordersid' value='{$row['orderId']}'>
-        <button type='submit' name='view-all-orders' class='btn btn-success'>View</button>
+        <button type='submit' name='view-all-orders' class='btn btn-success dm'><i class='fa fa-eye dmd'>Order</i></button>
         </form>
         </td>";
         // echo "<td>

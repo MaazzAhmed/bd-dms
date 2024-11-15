@@ -200,8 +200,73 @@
 										</table>
 
 
+										<?php
+										$sql = "SELECT total_payment, upscale, before_upscale FROM `order_payments` WHERE order_id = '$orderId'";
+										$query = mysqli_query($conn, $sql);
 
-										
+
+										$row = mysqli_fetch_assoc($query);
+
+										if ($row['upscale'] != null) {
+										?>
+
+											<table class="table table-striped table-bordered" id="analyticsDataTable">
+												<thead>
+													<tr>
+														<th style="width: 25%;">Before Upsale</th>
+														<th style="width: 25%;">Total Payment</th>
+
+													</tr>
+												</thead>
+												<tbody>
+
+													<tr>
+														<td><?php echo $row['before_upscale']; ?></td>
+														<td><?php echo $row['total_payment']; ?></td>
+													</tr>
+
+												</tbody>
+											</table>
+										<?php } ?>
+
+										<!-- Start refunds Orders -->
+
+										<?php
+										$sql = "SELECT reason_refund, amount, date FROM `refund_orders` WHERE order_id = '$orderId'";
+										$query = mysqli_query($conn, $sql);
+
+										// Fetch the data
+										$row = mysqli_fetch_assoc($query);
+
+										if ($row) {
+											if (!empty($row['reason_refund']) || !empty($row['amount'])) {
+										?>
+												<center>
+													<h4 style="background-color: black;">Refunds</h4>
+												</center>
+
+												<table class="table table-striped table-bordered" id="analyticsDataTable">
+													<thead>
+														<tr>
+															<th style="width: 25%;">Reason Refund</th>
+															<th style="width: 25%;">Amount</th>
+															<th style="width: 25%;">Date</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td><?php echo htmlspecialchars($row['reason_refund']); ?></td>
+															<td><?php echo htmlspecialchars($row['amount']); ?></td>
+															<td><?php echo date('j-M-Y', strtotime($row['date'])); ?></td>
+														</tr>
+													</tbody>
+												</table>
+										<?php
+											}
+										}
+										?>
+
+										<!-- End refunds Orders -->
 
 										<center>
 											<h4 style="background-color: black;">Lead Source & Lead Owner Info</h4>

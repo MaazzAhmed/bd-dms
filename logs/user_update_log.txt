@@ -99,3 +99,9 @@
 2024-10-15 18:05:54 - Maaz has updated the user information, Updated Fields: Team ID (Before: 7, After: 7), Shift (Before: 25, After: 25), Work From Home (Before: Deny, After: Allow)
 2024-10-23 17:38:02 - Maaz has updated the user information, Updated Fields: Team ID (Before: 2, After: 2), Shift (Before: 14, After: 14)
 2024-10-23 17:38:02 - Maaz has updated the brand permissions for user: dani.
+2024-10-28 15:42:47 - Maaz has updated the user information, Updated Fields: Team ID (Before: 2, After: 2), Shift (Before: 14, After: 14)
+2024-10-28 15:42:47 - Maaz has updated the brand permissions for user: dani.
+2024-11-04 11:13:21 - Maaz has updated the user information, Updated Fields: Role (Before: , After: Manager), Team ID (Before: 2, After: 2), Shift (Before: 14, After: 14)
+2024-11-04 11:14:00 - Maaz has updated the user information, Updated Fields: Team ID (Before: 2, After: 7), Shift (Before: 14, After: 14)
+2024-11-04 11:16:47 - Maaz has updated the user information, Updated Fields: Name (Before: Muhammad Athar Khan, After: execu), Email (Before: athar@gmail.com, After: exe@gmail.com), Role (Before: Admin, After: Executive), Team ID (Before: 2, After: 7), Shift (Before: 15, After: 15), Work From Home (Before: Deny, After: Allow)
+2024-11-04 11:16:47 - Maaz has updated the brand permissions for user: execu.

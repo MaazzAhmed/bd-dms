@@ -14,7 +14,7 @@ if (
 
 $order_id = $_GET['order_id'] ?? $_POST['order_id'] ?? null;
 
-$query = "SELECT `pending_payment`, `receive_payment`, `currency`, `payment_date` 
+$query = "SELECT `pending_payment`, `receive_payment`, `currency`, `payment_date`, `total_payment` 
 FROM `order_payments` 
 WHERE `order_id` = '$order_id' 
 ORDER BY `timestamp` DESC 
@@ -86,6 +86,7 @@ if ($result && $result->num_rows > 0) {
                             <form method="post" class="row g-3">
                                 <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
                                 <input type="hidden" name="pending_payment" value="<?php echo $pendingPayment['pending_payment'] ?? ''; ?>">
+                                <input type="hidden" name="total_payment" value="<?php echo $pendingPayment['total_payment']?>">
 
                                 <div class="col-md-6">
 
@@ -121,10 +122,9 @@ if ($result && $result->num_rows > 0) {
                                 </div>
                                 <div class="col-md-6">
 
-                                    <label for="inputOrderConfirmation" class="form-label">Order Confirmation
-                                        Date:</label>
+                                    <label for="inputOrderConfirmation" class="form-label">Payment Date:</label>
 
-                                    <input type="date" name="order_confirmation_date" class="form-control" required id="inputOrderConfirmation">
+                                    <input type="date" value="<?php echo date('Y-m-d'); ?>" name="order_confirmation_date" class="form-control" required id="inputOrderConfirmation">
 
                                 </div>
                                 <?php
