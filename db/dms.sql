@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 26, 2024 at 03:25 PM
+-- Generation Time: Dec 03, 2024 at 08:38 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -78,8 +78,8 @@ CREATE TABLE `brand_permissions` (
 --
 
 INSERT INTO `brand_permissions` (`id`, `brandpermission`, `user_id`) VALUES
-(1, 'EduResearchers', 98),
-(2, 'Gogrades', 98);
+(3, 'Gogrades', 98),
+(4, 'Gogrades', 96);
 
 -- --------------------------------------------------------
 
@@ -131,11 +131,11 @@ CREATE TABLE `delete_keys` (
 
 INSERT INTO `delete_keys` (`id`, `key`) VALUES
 (1, 'maazdd'),
-(2, 'TE9YTHlLT1Y2eEJVdHRDdUJEd29lUT09OjqMdsetkd0wCuA/KuBKPyya'),
-(3, 'ekhYZTdxTWREN1UyS0NLdXFCQkF2Zz09OjoU01ZKIv/Bem6kyWNS0VAk'),
-(4, 'ZEtCK1hFY2FZZTZIQ1M4MTl3b2xGdz09OjpdVWL6MXbiqKoRyzPsNszy'),
-(5, 'ZEtCK1hFY2FZZTZIQ1M4MTl3b2xGdz09OjpdVWL6MXbiqKoRyzPsNszy'),
-(6, 'ZEtCK1hFY2FZZTZIQ1M4MTl3b2xGdz09OjpdVWL6MXbiqKoRyzPsNszy');
+(2, 'Q2lhWnJvMEh4K3JDbyt3WjNERjBtUT09Ojr6cr321s2oLzyKMAGlwk/C'),
+(3, 'QVptM3ROTURad2hqdGtIbkJXVlY1Zz09OjoQUEWmzTAQ0Rj97JgeWuNp'),
+(4, 'Wk9hbmpMZ0w2K3g2Z29ScFh6VWd2Zz09Ojq5peR5bbXFgcZq+bWiyLRK'),
+(5, 'Wk9hbmpMZ0w2K3g2Z29ScFh6VWd2Zz09Ojq5peR5bbXFgcZq+bWiyLRK'),
+(6, 'Wk9hbmpMZ0w2K3g2Z29ScFh6VWd2Zz09Ojq5peR5bbXFgcZq+bWiyLRK');
 
 -- --------------------------------------------------------
 
@@ -198,7 +198,7 @@ INSERT INTO `leads` (`id`, `campId`, `client_name`, `client_contact_number`, `le
 (18, '32432', 'dd', '32434324324', '2024-10-23', 'United Arab Emirates', 'dsas@gmail.com', 'New', 'Through Email', 98, 'Gogrades', 'GoGrades 324322323', NULL, NULL, '', 'Live', 'Not_Deleted'),
 (19, '32642', 'alex', '124521', '2024-10-23', 'Mozambique', 'alex@gmail.com', 'Recurring', 'PPC', 98, 'Gogrades', 'GoGrades 324322323', NULL, 'alex', '', 'Core', 'Not_Deleted'),
 (21, 'Camp ID', 'Client Name', 'Client Contact Number', '0000-00-00', 'Client Country', 'Client Email', 'Client Info', 'Lead Source', 97, 'Brand Name', 'Whatsapp Name', NULL, 'Refer Client Name', 'Platform', 'Lead Type', 'Not_Deleted'),
-(22, 'dsadsa', 'dani', '32423323223', '2024-10-23', 'Pakistan', 'dani@gmail.com', 'New', 'Social Media Marketing', 97, 'Gogrades', 'GoGrades 324322323', NULL, '', 'Facebook', 'Live', 'Not_Deleted'),
+(22, 'dsadsa', 'dani', '32423323223', '2024-10-23', 'Pakistan', 'dani@gmail.com', 'New', 'Social Media Marketing', 97, 'EduResearchers', 'EduResearchers 5345324533442', NULL, '', 'Facebook', 'Live', 'Not_Deleted'),
 (23, '332433', 'abc', '04350450432', '2024-10-23', 'Norway', 'abc@gmail.com', 'Referral', 'Refer', 97, 'Gogrades', 'GoGrades 324322323', NULL, 'maaz', '', 'Live', 'Not_Deleted'),
 (24, '32432', 'dd', '32434324324', '2024-10-23', 'United Arab Emirates', 'dsas@gmail.com', 'New', 'Through Email', 97, 'Gogrades', 'GoGrades 324322323', NULL, '', '', 'Live', 'Not_Deleted'),
 (25, '32642', 'alex', '124521', '2024-10-23', 'Mozambique', 'alex@gmail.com', 'Recurring', 'PPC', 97, 'Gogrades', 'GoGrades 324322323', NULL, 'alex', '', 'Core', 'Not_Deleted');
@@ -237,7 +237,7 @@ CREATE TABLE `order` (
   `orderId` int(11) NOT NULL,
   `order_id_input` int(11) NOT NULL,
   `order_title` varchar(255) DEFAULT NULL,
-  `order_status` enum('Follow up','Revision','File not received','Refund/Deadline','Converted','Delivered') DEFAULT NULL,
+  `order_status` enum('Follow up','Revision','File not received','Refund/Deadline','Converted','Delivered','Cancelled') DEFAULT NULL,
   `payment_status` varchar(250) NOT NULL DEFAULT '----',
   `word_count` varchar(350) DEFAULT NULL,
   `whatsapp_account` varchar(255) DEFAULT NULL,
@@ -265,11 +265,9 @@ CREATE TABLE `order` (
 --
 
 INSERT INTO `order` (`orderId`, `order_id_input`, `order_title`, `order_status`, `payment_status`, `word_count`, `whatsapp_account`, `payment_account`, `portal_due_date`, `final_deadline_time`, `order_confirmation_date`, `pending_payment_Month`, `pending_payment_status`, `writers_team`, `plan`, `assigned_to`, `year`, `years`, `comment`, `client_requirements`, `user_id`, `lead_id`, `order_confirmation_month`, `del_status`) VALUES
-(42, 23, 'Title', 'Follow up', 'Half Payment', '50', '213213', 'Meezan', '2024-10-31', '2024-11-09 06:47:00', '2024-10-23', '', 'UnPaid', 'writers', 'Classic', 'ddd', 2024, 2024, 'dfs', 'dsf', 97, 25, 'October', 'Not_Deleted'),
-(43, 213, 'dsws', 'Revision', 'Half Payment', '123321', '2344321', 'Meezan', '2024-10-28', '2024-10-31T11:03', '2024-10-23', '', '', 'fewd', 'Classic', 'ewf', 2024, 2024, 'dsfs', 'fds fd sfd', 97, 24, 'October', 'Not_Deleted'),
-(44, 4230, 'dd', 'Follow up', 'Half Payment', '342432', '32432', 'HBL', '2024-10-31', '2024-11-01 02:52:00', '2024-10-16', '', 'UnPaid', 'few', 'Classic', 'rtd', 2024, 2024, 'fd', 'fsd', 97, 23, 'October', 'Not_Deleted'),
-(45, 222, 'ttttt', 'Follow up', '----	', '5555', '123456789', 'HBL', '2024-11-05', '2024-11-07 07:22:00', '2024-10-26', '', '', 'abc', 'Premium', 'ddd', 2024, 0, 'xyz', 'xyz', 97, 23, 'October', 'Not_Deleted'),
-(46, 222, 'ttttt', 'Follow up', '----', '5555', '123456789', 'HBL', '2024-11-05', '2024-11-07T07:22', '2024-10-26', '', '', 'abc', 'Premium', 'ddd', 2024, 0, 'xyz', 'xyzs', 97, 23, 'October', 'Deleted');
+(47, 32, 'tit', 'Converted', '----	', '555', '453435', 'HBL', '2024-11-09', '2024-11-13 03:50:00', '2024-10-29', '', '', 'd', 'Premium', 'Maaz', 2024, 0, 'dd', 'dd dd ', 97, 22, 'October', 'Not_Deleted'),
+(61, 4230, 'di', 'Cancelled', 'Half Payment', '333', '657546', 'Meezan', '2024-11-02', '2024-11-06 12:54:00', '2024-10-30', '', '', 'mddmddmdmddmmdm', 'Classic', 'mddddmmddmddmddmmdmddmm', 2024, 0, 'dsdsd', 'dndndnd', 97, 25, 'October', 'Not_Deleted'),
+(62, 342, 'dd', 'Refund/Deadline', 'Half Payment', '432', '4654', 'Meezan', '2024-11-07', '2024-11-15T11:38', '2024-11-01', '', '', 'fdg', 'Premium', 'fdg', 2024, 0, 'g', 'gfd', 98, 19, 'November', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -286,7 +284,10 @@ CREATE TABLE `order_payments` (
   `payment_date` varchar(500) NOT NULL,
   `order_id` int(11) NOT NULL,
   `year` int(11) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `total_payment` varchar(500) NOT NULL,
+  `upscale` varchar(500) NOT NULL,
+  `before_upscale` varchar(300) NOT NULL,
   `del_status` varchar(250) NOT NULL DEFAULT 'Not_Deleted'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -294,13 +295,12 @@ CREATE TABLE `order_payments` (
 -- Dumping data for table `order_payments`
 --
 
-INSERT INTO `order_payments` (`id`, `pending_payment`, `receive_payment`, `month`, `currency`, `payment_date`, `order_id`, `year`, `timestamp`, `del_status`) VALUES
-(1, '1000', '2000', 'October', 'INR', '2024-10-22', 42, 2024, '2024-10-26 12:55:52', 'Not_Deleted'),
-(2, '1000', '200', 'October', 'INR', '2024-10-22', 43, 2024, '2024-10-26 08:07:36', 'Not_Deleted'),
-(13, '32432', '324', 'October', 'BBD', '2024-10-16', 44, 2024, '2024-10-26 12:55:31', 'Not_Deleted'),
-(14, '54', '100', 'October', 'MYR', '2024-10-26', 45, 2024, '2024-10-26 12:55:35', 'Not_Deleted'),
-(15, '54', '100', 'October', 'MYR', '2024-10-26', 46, 2024, '2024-10-26 12:55:37', 'Not_Deleted'),
-(16, '0', '1000', 'October', 'INR', '2024-10-26', 42, 0, '2024-10-26 12:56:33', 'Not_Deleted');
+INSERT INTO `order_payments` (`id`, `pending_payment`, `receive_payment`, `month`, `currency`, `payment_date`, `order_id`, `year`, `timestamp`, `total_payment`, `upscale`, `before_upscale`, `del_status`) VALUES
+(20, '400', '1000', 'October', 'AUD', '2024-10-29', 47, 2024, '2024-10-30 11:03:30', '1400', '', '', 'Not_Deleted'),
+(21, '200', '200', 'October', 'AUD', '2024-10-29', 47, 2024, '2024-10-30 11:03:27', '1400', '', '', 'Not_Deleted'),
+(31, '100', '400', 'October', 'AUD', '2024-10-30', 61, 2024, '2024-10-31 06:02:24', '500', 'upsale', '200', 'Not_Deleted'),
+(33, '50', '50', 'October', 'AUD', '2024-10-31', 61, 2024, '2024-10-31 10:52:58', '500', '', '', 'Not_Deleted'),
+(34, '100', '500', 'November', 'AZN', '2024-11-01', 62, 2024, '2024-11-01 06:39:00', '600', '', '', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -336,7 +336,7 @@ CREATE TABLE `permissions` (
 
 INSERT INTO `permissions` (`permissionid`, `lead_management`, `log_management`, `view_users`, `Add_user`, `add_shift`, `view_shift`, `view_team`, `add_team`, `add_lead`, `view_lead`, `add_core_lead`, `view_core_lead`, `view_order`, `filter1`, `filter2`, `filter3`, `user_id`, `del_status`) VALUES
 (67, 'Deny', 'Deny', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 97, 'Not_Deleted'),
-(68, 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 46, 'Not_Deleted'),
+(68, 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 96, 'Not_Deleted'),
 (69, 'Deny', 'Deny', 'Allow', 'Deny', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 47, 'Not_Deleted'),
 (70, 'Deny', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 98, 'Not_Deleted');
 
@@ -359,6 +359,29 @@ INSERT INTO `plan` (`id`, `plan`) VALUES
 (1, 'Classic'),
 (2, 'Premium'),
 (6, 'GOld');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `refund_orders`
+--
+
+CREATE TABLE `refund_orders` (
+  `id` int(11) NOT NULL,
+  `reason_refund` text NOT NULL,
+  `amount` varchar(500) NOT NULL,
+  `month` varchar(200) NOT NULL,
+  `year` varchar(200) NOT NULL,
+  `date` varchar(300) NOT NULL,
+  `order_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `refund_orders`
+--
+
+INSERT INTO `refund_orders` (`id`, `reason_refund`, `amount`, `month`, `year`, `date`, `order_id`) VALUES
+(1, 'Dont Know', '500', 'November', '2024', '2024-11-01', 62);
 
 -- --------------------------------------------------------
 
@@ -415,7 +438,7 @@ CREATE TABLE `user` (
   `name` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `role` enum('Admin','Editor','Viewer') NOT NULL,
+  `role` enum('Admin','Manager','Executive') NOT NULL,
   `last_login` datetime DEFAULT NULL,
   `last_id_address` varchar(255) DEFAULT NULL,
   `team_Id` int(11) DEFAULT NULL,
@@ -432,11 +455,11 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`userId`, `name`, `email`, `password`, `role`, `last_login`, `last_id_address`, `team_Id`, `shift_id`, `system_status`, `secret_key`, `wfh`, `del_status`) VALUES
 (46, 'admin', 'admin@gmail.com', '$2y$10$L1vUIr.YSjVW.58zCdnjguCGGlXvNMNUm4/tLvasK7gDjfPdn4SSy', 'Admin', '2024-03-21 14:26:34', '::1', 2, 14, 'Active', '123', 'Deny', 'Not_Deleted'),
-(47, 'editors', 'editors@gmail.com', '$2y$10$nD9fFaa1EOuo75WUBkSzCuBhMT0gs6z/Ae.w51jr60/HNHn6QuToK', 'Editor', '2024-02-26 16:51:44', '39.51.69.16', 8, 14, 'Active', '123', 'Deny', 'Not_Deleted'),
+(47, 'editors', 'editors@gmail.com', '$2y$10$nD9fFaa1EOuo75WUBkSzCuBhMT0gs6z/Ae.w51jr60/HNHn6QuToK', '', '2024-02-26 16:51:44', '39.51.69.16', 8, 14, 'Active', '123', 'Deny', 'Not_Deleted'),
 (95, 'Qadama Ahmed Khan', 'qadamaalam@gmail.com', '$2y$10$VOKLWpw5xDzPvdcveLG/g.hafFhJliE8Bhma4BfdlNfQQDn0BiLS6', 'Admin', '2024-02-12 18:14:55', '39.57.195.226', 7, 25, 'Active', '123', 'Deny', 'Not_Deleted'),
-(96, 'Muhammad Athar Khan', 'athar@gmail.com', '$2y$10$qciD7ztOj.POra0cvMh9CuWEz9wLD3j7.M6x5s.Gx29mbLlRpcrC.', 'Admin', '2024-02-27 23:21:10', '202.47.38.106', 2, 15, 'Active', '123', 'Deny', 'Not_Deleted'),
-(97, 'Maaz', 'maaza42101@gmail.com', '$2y$10$A/unfoK6SHS0KzuDvjL9zOvlN0baypL.H07.3Tjnhours8msvyYXi', 'Admin', '2024-10-23 11:12:43', '::1', 2, 14, 'Active', '123', 'Allow', 'Not_Deleted'),
-(98, 'dani', 'dani@gmail.com', '$2y$10$97semRhlzhFDq/NsJtsW4OmUhCMsdja038u6wE00jymnCabxeOc/C', 'Editor', '2024-10-23 15:19:39', '::1', 2, 14, 'Active', '123', 'Allow', 'Not_Deleted');
+(96, 'execu', 'exe@gmail.com', '$2y$10$fCrB/uwHr3nJetpUexEsOOkHRXUScYouPL0q3ejnCXUM0vLvt7YKy', 'Executive', '2024-11-04 14:49:50', '::1', 7, 15, 'Active', '123', 'Allow', 'Not_Deleted'),
+(97, 'Maaz', 'maaza42101@gmail.com', '$2y$10$A/unfoK6SHS0KzuDvjL9zOvlN0baypL.H07.3Tjnhours8msvyYXi', 'Admin', '2024-11-05 11:09:50', '::1', 2, 14, 'Active', '123', 'Allow', 'Not_Deleted'),
+(98, 'dani', 'dani@gmail.com', '$2y$10$97semRhlzhFDq/NsJtsW4OmUhCMsdja038u6wE00jymnCabxeOc/C', 'Manager', '2024-11-05 17:20:21', '::1', 7, 14, 'Active', '123', 'Allow', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -455,7 +478,8 @@ CREATE TABLE `whatsapp` (
 --
 
 INSERT INTO `whatsapp` (`id`, `whatsapp_name`, `whatsapp_number`) VALUES
-(1, 'GoGrades', '324322323');
+(1, 'GoGrades', '324322323'),
+(2, 'EduResearchers', '5345324533442');
 
 --
 -- Indexes for dumped tables
@@ -534,6 +558,13 @@ ALTER TABLE `plan`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `refund_orders`
+--
+ALTER TABLE `refund_orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `refund_orders_ibfk_1` (`order_id`);
+
+--
 -- Indexes for table `shift`
 --
 ALTER TABLE `shift`
@@ -574,7 +605,7 @@ ALTER TABLE `bank_accounts`
 -- AUTO_INCREMENT for table `brand_permissions`
 --
 ALTER TABLE `brand_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `core_leads`
@@ -610,13 +641,13 @@ ALTER TABLE `lead_source`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `order_payments`
 --
 ALTER TABLE `order_payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -629,6 +660,12 @@ ALTER TABLE `permissions`
 --
 ALTER TABLE `plan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `refund_orders`
+--
+ALTER TABLE `refund_orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `shift`
@@ -652,7 +689,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `whatsapp`
 --
 ALTER TABLE `whatsapp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -688,6 +725,12 @@ ALTER TABLE `order_payments`
 --
 ALTER TABLE `permissions`
   ADD CONSTRAINT `permissions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`userId`);
+
+--
+-- Constraints for table `refund_orders`
+--
+ALTER TABLE `refund_orders`
+  ADD CONSTRAINT `refund_orders_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order` (`orderId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user`
