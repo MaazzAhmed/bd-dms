@@ -218,6 +218,26 @@ $shifts = getShift($conn); ?>
                                         ?>
                                     </select>
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="inputShift" class="form-label">Allow to view All Leads & Orders</label>
+                                    <select id="inputShift" name="leads_order_view" class="form-select">
+                                        <?php
+                                        // Enum values agar use kar rahe hain, to wo fetch kar sakte hain
+                                        $enumValues = getEnumValues($conn, 'user', 'leads_order_view');
+
+
+                                        // Loop to create options dynamically
+                                        foreach ($enumValues as $value) {
+                                            // Agar current value match karti hai to 'selected' set karna
+                                            $selected = ($editUserData['leads_order_view'] == $value) ? 'selected' : '';
+
+                                            // Option tag print karna
+                                            echo "<option value='$value' $selected>$value</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
 
                                 <div class="col-md-6">
 

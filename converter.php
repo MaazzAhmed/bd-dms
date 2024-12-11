@@ -2,11 +2,11 @@
 <?php require_once("./main_components/header.php"); 
 
 
-if (!isset($_SESSION['role']) || 
-    ($_SESSION['role'] !== 'Admin')) {
-        echo "<script>window.location.href = 'index';</script>";
-        exit(); 
-}
+// if (!isset($_SESSION['role']) || 
+//     ($_SESSION['role'] !== 'Admin')) {
+//         echo "<script>window.location.href = 'index';</script>";
+//         exit(); 
+// }
 
 ?>
 
@@ -32,7 +32,9 @@ if (!isset($_SESSION['role']) ||
 
 
 
-                <?php if ($_SESSION['role'] == 'Admin') { ?>
+                <?php
+                //  if ($_SESSION['role'] == 'Admin') { 
+                    ?>
 
                     <div class="row w-75">
                         <div class="col-md-4">
@@ -83,7 +85,10 @@ if (!isset($_SESSION['role']) ||
                         </div> -->
                     </div>
 
-                <?php } ?>
+                <?php
+            //  }
+              ?>
+
 
             </div>
 
@@ -118,11 +123,15 @@ if (!isset($_SESSION['role']) ||
 
                                     <th>Order Confirmation Date</th>
 
-                                    <?php if ($_SESSION['role'] == 'Admin') { ?>
+                                    <?php
+                                    //  if ($_SESSION['role'] == 'Admin') { 
+                                        ?>
 
                                         <th>Converter</th>
 
-                                    <?php } ?>
+                                    <?php
+                                    //  }
+                                     ?>
 
                                     <th>Action</th>
 

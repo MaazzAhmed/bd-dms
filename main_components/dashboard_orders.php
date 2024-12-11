@@ -37,7 +37,7 @@ $sql = "SELECT
         WHERE `order`.del_status != 'Deleted'
         AND recent_payments.payment_date BETWEEN '$startDate' AND '$endDate'";
 }
-if ($_SESSION['role'] == 'Manager' || $_SESSION['role'] == 'Executive') {
+else if ($_SESSION['role'] == 'Manager' || $_SESSION['role'] == 'Executive' && isset($userDetails['leads_order_view']) && $userDetails['leads_order_view'] != 'Deny') {
 $sql = "SELECT 
             recent_payments.receive_payment AS receive_payment,
             recent_payments.pending_payment AS pending_payment,
@@ -60,6 +60,30 @@ $sql = "SELECT
         ) AS recent_payments ON `order`.orderId = recent_payments.order_id
         WHERE `order`.del_status != 'Deleted'
         AND recent_payments.payment_date BETWEEN '$startDate' AND '$endDate' AND  `user`.team_Id = $teamId";
+}
+else{
+    $sql = "SELECT 
+            recent_payments.receive_payment AS receive_payment,
+            recent_payments.pending_payment AS pending_payment,
+            recent_payments.currency AS currency,
+            `order`.orderId, `order`.user_id
+        FROM `order`
+        LEFT JOIN `user` ON `order`.user_id = `user`.userId
+            LEFT JOIN `team` ON `user`.team_Id = team.teamId
+        LEFT JOIN (
+            SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.payment_date, op1.total_payment, op1.currency
+            FROM order_payments op1
+            INNER JOIN (
+                SELECT order_id, MAX(timestamp) AS max_timestamp
+                FROM order_payments
+                WHERE del_status != 'Deleted'
+                GROUP BY order_id
+            ) op2 ON op1.order_id = op2.order_id 
+            AND op1.timestamp = op2.max_timestamp
+            WHERE op1.del_status != 'Deleted'
+        ) AS recent_payments ON `order`.orderId = recent_payments.order_id
+        WHERE `order`.del_status != 'Deleted'
+        AND recent_payments.payment_date BETWEEN '$startDate' AND '$endDate' AND  user.userId = '$userid'";
 }
 
 

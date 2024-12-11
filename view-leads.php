@@ -89,7 +89,10 @@ if (
             <hr />
             <div class="card">
                 <div class="card-body">
+                    <?php
+                    //    $all_orders_leadss = $userDetails['leads_order_view'];
 
+                    ?>
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                             <thead>
@@ -101,8 +104,9 @@ if (
                                     <th>Client Country</th>
                                     <th>Client Email</th>
                                     <th>Lead Landing Date</th>
-                                    <?php if ($_SESSION['role'] != 'Viewer') { ?>
-                                        <th>Status</th>
+                                    <th>Status</th>
+                                    <?php 
+                                    if ($_SESSION['role'] != 'Executive') { ?>
                                         <th>Edit</th>
                                     <?php } ?>
                                     <?php if ($_SESSION['role'] == 'Admin') { ?>
@@ -114,8 +118,12 @@ if (
                             <tbody>
                                 <?php
 
+                                // echo $userDetails['leads_order_view'] ." role  ". $_SESSION['role']." id  ". $_SESSION['id'];
+
                                 function getLeads($conn)
                                 {
+                                    global $userDetails; // Make $userDetails available inside this function
+
                                     $leads = array();
                                     $userid = $_SESSION['id'];
                                     $role = $_SESSION['role'];
@@ -125,14 +133,15 @@ if (
 
                                     if ($role == 'Admin') {
                                         $query = "SELECT leads.id, leads.campId, leads.client_name, leads.client_contact_number, 
-                         leads.lead_landing_date, leads.client_country, leads.client_email, 
-                         leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
-                         leads.refer_client_name, user.name
-                  FROM leads 
-                  LEFT JOIN user ON leads.user_id = user.userId 
-                  WHERE leads.del_status != 'Deleted' 
-                  ORDER BY leads.id DESC";
-                                    } else if ($role == 'Viewer') {
+                                        leads.lead_landing_date, leads.client_country, leads.client_email, 
+                                        leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
+                                        leads.refer_client_name, user.name
+                                        FROM leads 
+                                        LEFT JOIN user ON leads.user_id = user.userId 
+                                        WHERE leads.del_status != 'Deleted' 
+                                        ORDER BY leads.id DESC";
+                                    } 
+                                    else if ($role == 'Manager') {
                                         $brands = getAllowedDisplayBrandsForUser($conn, $userid);
 
 
@@ -149,19 +158,63 @@ if (
 
 
                                             $query = "SELECT leads.id, leads.campId, leads.client_name, leads.client_contact_number, 
-                             leads.lead_landing_date, leads.client_country, leads.client_email, 
-                             leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
-                             leads.refer_client_name, user.name
-                            FROM leads
-                      LEFT JOIN user ON leads.user_id = user.userId     
-                      WHERE leads.brand_name IN ($brandList)  AND leads.del_status != 'Deleted'
-
-                      ORDER BY leads.id DESC";
+                                            leads.lead_landing_date, leads.client_country, leads.client_email, 
+                                            leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
+                                            leads.refer_client_name, user.name
+                                            FROM leads
+                                            LEFT JOIN user ON leads.user_id = user.userId     
+                                            WHERE leads.brand_name IN ($brandList)  AND leads.del_status != 'Deleted'
+                                            ORDER BY leads.id DESC";
                                         } else {
                                             // If no brands are allowed for the user, return no leads
-                                            die("No brands available for the Viewer.");
+                                            die("No brands available for the Manager.");
                                         }
-                                    } else {
+                                    }
+                                    elseif($role == 'Executive' && isset($userDetails['leads_order_view']) &&    $userDetails['leads_order_view'] != 'Deny'){
+                                        $brands = getAllowedDisplayBrandsForUser($conn, $userid);
+
+
+
+                                        if (!empty($brands)) {
+                                            // Collect all brand permissions
+                                            $brandNames = array();
+                                            foreach ($brands as $brand) {
+                                                $brandNames[] = "'" . $conn->real_escape_string($brand['brandpermission']) . "'";
+                                            }
+
+                                            $brandList = implode(',', $brandNames);
+
+
+
+                                            $query = "SELECT leads.id, leads.campId, leads.client_name, leads.client_contact_number, 
+                                            leads.lead_landing_date, leads.client_country, leads.client_email, 
+                                            leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
+                                            leads.refer_client_name, user.name
+                                            FROM leads
+                                            LEFT JOIN user ON leads.user_id = user.userId     
+                                            WHERE leads.brand_name IN ($brandList)  AND leads.del_status != 'Deleted'
+                                            ORDER BY leads.id DESC";
+                                        } else {
+                                            // If no brands are allowed for the user, return no leads
+                                            die("No brands available for the Manager.");
+                                        }
+
+                                    }
+                                //     elseif($role == 'Executive' && isset($userDetails['leads_order_view']) &&    $userDetails['leads_order_view'] == 'Deny'){
+                                //         $query = "SELECT leads.id, leads.campId, leads.client_name, leads.client_contact_number, 
+                                //         leads.lead_landing_date, leads.client_country, leads.client_email, 
+                                //         leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
+                                //         leads.refer_client_name, user.name
+                                //  FROM leads
+                                //  LEFT JOIN user ON leads.user_id = user.userId
+                                //  LEFT JOIN `team` ON `user`.team_Id = team.teamId
+                                //  WHERE leads.del_status != 'Deleted' And `user`.userId = $userid
+                                //  ORDER BY leads.id DESC";
+
+                                //     }
+                                    
+
+                                    else {
                                         $query = "SELECT leads.id, leads.campId, leads.client_name, leads.client_contact_number, 
                          leads.lead_landing_date, leads.client_country, leads.client_email, 
                          leads.brand_name, leads.whatsapp_name, leads.whatsapp_number, 
@@ -169,7 +222,7 @@ if (
                   FROM leads
                   LEFT JOIN user ON leads.user_id = user.userId
                   LEFT JOIN `team` ON `user`.team_Id = team.teamId
-                  WHERE leads.del_status != 'Deleted' And `user`.team_Id = $teamId
+                  WHERE leads.del_status != 'Deleted' And `user`.userId = $userid
                   ORDER BY leads.id DESC";
                                     }
 
@@ -219,10 +272,12 @@ if (
                                         <td><?php echo date('d-m-Y', strtotime($lead['lead_landing_date'])); ?></td>
 
                                         <?php if ($lead['id'] != $orderLeadId) { ?>
-                                            <?php if ($_SESSION['role'] != 'Viewer') { ?>
+                                            <?php 
+                                                // if ($_SESSION['role'] != 'Executive') {
+                                                     ?>
+                                                    <td>
                                                 <form method="post" action="add-order">
                                                     <input type="hidden" name="l_id" value="<?php echo $lead['id']; ?>">
-                                                    <td>
                                                         <button type="submit" name="add_lead_id" class="bg-secondary text-white px-3 rounded-pill">
                                                             <div class="col" tabindex="6">
                                                                 <div class="d-flex bg-secondary align-items-center theme-icons shadow-sm cursor-pointer rounded-pill">
@@ -233,12 +288,18 @@ if (
                                                                 </div>
                                                             </div>
                                                         </button>
-                                                    </td>
-                                                </form>
-                                            <?php } ?>
-                                        <?php } else { ?>
+                                                    </form>
+                                                </td>
+                                            <?php 
+                                        // }
+                                       
+                                     } 
+                                     else {
+                                         ?>
                                             <td>
-                                                <?php if ($_SESSION['role'] != 'Viewer') { ?>
+                                                <?php
+                                                //  if ($_SESSION['role'] != 'Executive') {
+                                                     ?>
                                                     <form method="post" action="add-order">
                                                         <input type="hidden" name="l_id" value="<?php echo $lead['id']; ?>">
                                                         <button type="submit" name="add_lead_id" style="background-color: rgb(8 92 70);" class="text-white px-3 rounded-pill">
@@ -254,11 +315,13 @@ if (
                                                             </div>
                                                         </button>
                                                     </form>
-                                                <?php } ?>
+                                                <?php
+                                                //  }
+                                                 ?>
                                             </td>
                                         <?php } ?>
 
-                                        <?php if ($_SESSION['role'] != 'Viewer') { ?>
+                                        <?php if ($_SESSION['role'] != 'Executive') { ?>
                                             <form method="post" action="edit-lead">
                                                 <input type="hidden" name="l_id" value="<?php echo $lead['id']; ?>">
                                                 <td>

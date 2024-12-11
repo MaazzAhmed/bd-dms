@@ -19,23 +19,42 @@ if (!isset($_SESSION['key']) || $_SESSION['key'] !== $_SESSION['secret_key']) {
 
 
 
-$userId = $_SESSION['id'];
+// $userId = $_SESSION['id'];
 
-// Fetch user permissions from the database
+// // Fetch user permissions from the database
 
-$getPermissionsQuery = "SELECT * FROM permissions WHERE user_id = ?";
+// $getPermissionsQuery = "SELECT * FROM permissions WHERE user_id = ?";
 
-$stmtPermissions = mysqli_prepare($conn, $getPermissionsQuery);
+// $stmtPermissions = mysqli_prepare($conn, $getPermissionsQuery);
 
-mysqli_stmt_bind_param($stmtPermissions, "i", $userId);
+// mysqli_stmt_bind_param($stmtPermissions, "i", $userId);
 
-mysqli_stmt_execute($stmtPermissions);
+// mysqli_stmt_execute($stmtPermissions);
 
-$result = mysqli_stmt_get_result($stmtPermissions);
+// $result = mysqli_stmt_get_result($stmtPermissions);
 
-$userPermissions = mysqli_fetch_assoc($result);
+// $userPermissions = mysqli_fetch_assoc($result);
 
-mysqli_stmt_close($stmtPermissions);
+// mysqli_stmt_close($stmtPermissions);
+
+function getUserData($conn, $tableName, $userIdColumn, $userId){
+    $query = "Select * from $tableName where $userIdColumn = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $userData = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    return $userData;
+
+}
+
+$userPermissions = getUserData($conn, 'permissions', 'user_id', $_SESSION['id']);
+$userDetails = getUserData($conn, 'user', 'userId', $_SESSION['id']);
+
+
 
 $SITE_TITLE = "BD-DMS";
 

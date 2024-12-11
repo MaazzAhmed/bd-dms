@@ -112,8 +112,8 @@ if (
                                     <th>Client Country</th>
                                     <th>Client Email</th>
                                     <th>Lead Landing Date</th>
-                                    <?php if ($_SESSION['role'] != 'Viewer') { ?>
-                                        <th>Status</th>
+                                    <th>Status</th>
+                                    <?php if ($_SESSION['role'] != 'Executive') { ?>
                                         <th>Edit</th>
                                     <?php } ?>
                                     <?php if ($_SESSION['role'] == 'Admin') { ?>
@@ -127,6 +127,9 @@ if (
 
                                 function getLeads($conn)
                                 {
+
+                                    global $userDetails;
+
                                     $leads = array();
                                     $userid = $_SESSION['id'];
                                     $role = $_SESSION['role'];
@@ -134,10 +137,11 @@ if (
 
                                     if ($role == 'Admin') {
                                         $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
-                  FROM core_leads
-                  LEFT JOIN user ON core_leads.user_id = user.userId WHERE core_leads.del_status != 'Deleted'
-                  ORDER BY core_leads.id DESC";
-                                    } else if ($role == 'Viewer') {
+                                        FROM core_leads
+                                        LEFT JOIN user ON core_leads.user_id = user.userId WHERE core_leads.del_status != 'Deleted'
+                                        ORDER BY core_leads.id DESC";
+                                    }
+                                     else if ($role == 'Manager') {
                                         $brands = getAllowedDisplayBrandsForUser($conn, $_SESSION['id']);
 
 
@@ -153,21 +157,47 @@ if (
 
 
                                             $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
-                      FROM core_leads
-                      LEFT JOIN user ON core_leads.user_id = user.userId     
-                      WHERE core_leads.brand_name IN ($brandList) AND core_leads.del_status != 'Deleted'
-                      ORDER BY core_leads.id DESC";
+                                            FROM core_leads
+                                            LEFT JOIN user ON core_leads.user_id = user.userId     
+                                            WHERE core_leads.brand_name IN ($brandList) AND core_leads.del_status != 'Deleted'
+                                            ORDER BY core_leads.id DESC";
                                         } else {
-                                            die("No brands available for the Viewer.");
+                                            die("No brands available for the Manager.");
                                         }
-                                    } else {
-                                        $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
-                  FROM core_leads
-                  LEFT JOIN user ON core_leads.user_id = user.userId
-                  LEFT JOIN `team` ON `user`.team_Id = team.teamId
+                                    }
+                                    elseif($role == 'Executive' && isset($userDetails['leads_order_view']) &&    $userDetails['leads_order_view'] != 'Deny'){
+                                        $brands = getAllowedDisplayBrandsForUser($conn, $_SESSION['id']);
 
-                  WHERE core_leads.del_status != 'Deleted' And `user`.team_Id = $teamId
-                  ORDER BY core_leads.id DESC";
+
+
+                                        if (!empty($brands)) {
+                                            $brandNames = array();
+                                            foreach ($brands as $brand) {
+                                                $brandNames[] = "'" . $conn->real_escape_string($brand['brandpermission']) . "'";
+                                            }
+
+                                            $brandList = implode(',', $brandNames);
+
+
+
+                                            $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
+                                            FROM core_leads
+                                            LEFT JOIN user ON core_leads.user_id = user.userId     
+                                            WHERE core_leads.brand_name IN ($brandList) AND core_leads.del_status != 'Deleted'
+                                            ORDER BY core_leads.id DESC";
+                                        } else {
+                                            die("No brands available for the Manager.");
+                                        }
+                                        
+                                    }
+                                    
+                                    else {
+                                        $query = "SELECT core_leads.id, core_leads.campId, core_leads.client_name, core_leads.client_contact_number, core_leads.lead_landing_date, core_leads.client_country, core_leads.client_email, core_leads.brand_name, core_leads.whatsapp_name, core_leads.whatsapp_number, core_leads.refer_client_name, user.name
+                                        FROM core_leads
+                                        LEFT JOIN user ON core_leads.user_id = user.userId
+                                        LEFT JOIN `team` ON `user`.team_Id = team.teamId
+                                        WHERE core_leads.del_status != 'Deleted' And `user`.userId = $userid
+                                        ORDER BY core_leads.id DESC";
                                     }
 
 
@@ -220,7 +250,9 @@ if (
                                         <td><?php echo $lead['client_email']; ?></td>
                                         <td><?php echo date('d-m-Y', strtotime($lead['lead_landing_date'])); ?></td>
 
-                                        <?php if ($_SESSION['role'] != 'Viewer') { ?>
+                                        <?php
+                                        //  if ($_SESSION['role'] != 'Executive') {
+                                             ?>
                                             <form method="post">
                                                 <input type="hidden" name="l_id" value="<?php echo $lead['id']; ?>">
                                                 <td>
@@ -236,11 +268,15 @@ if (
                                                     </button>
                                                 </td>
                                             </form>
-                                        <?php } ?>
+                                        <?php
+                                    //  }
+                                      ?>
 
 
 
-                                        <?php if ($_SESSION['role'] != 'Viewer') { ?>
+                                        <?php
+                                         if ($_SESSION['role'] != 'Executive') {
+                                             ?>
                                             <form method="post" action="edit-core-lead">
                                                 <input type="hidden" name="l_id" value="<?php echo $lead['id']; ?>">
                                                 <td>

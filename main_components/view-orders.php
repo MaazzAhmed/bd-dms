@@ -2,6 +2,21 @@
 
 require_once("configration.php");
 session_start();
+
+
+function getUserData($conn, $tableName, $userIdColumn, $userId)
+{
+    $query = "Select * from $tableName where $userIdColumn = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $userData = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    return $userData;
+}
 // Get filter values from the POST request
 $ipFilter = $_POST['ipFilter'] ?? '';
 $orderStatus = $_POST['orderStatus'] ?? '';
@@ -24,6 +39,11 @@ $brandname = $_POST['brandname'] ?? '';
 $offset = ($currentPage - 1) * $recordsPerPage;
 $userid = $_SESSION['id'] ?? '';
 $teamId = $_SESSION['team_id'] ?? '';
+
+$userDetails = getUserData($conn, 'user', 'userId', $_SESSION['id']);
+
+global $userDetails;
+
 
 // Build the base SQL query based on the user's role
 if ($_SESSION['role'] == 'Admin') {
@@ -50,7 +70,7 @@ if ($_SESSION['role'] == 'Admin') {
                 WHERE op1.del_status != 'Deleted'
             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
             WHERE order.del_status != 'Deleted'";
-} else {
+} else if ($_SESSION['role'] == 'Manager' || $_SESSION['role'] == 'Executive' && isset($userDetails['leads_order_view']) &&        $userDetails['leads_order_view'] != 'Deny') {
     $sql = "SELECT `order`.*, user.name, user.team_Id, 
             leads.campId, leads.client_name, leads.client_contact_number, 
             leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
@@ -75,32 +95,33 @@ if ($_SESSION['role'] == 'Admin') {
                 WHERE op1.del_status != 'Deleted'
             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
             WHERE `user`.team_Id = $teamId AND order.del_status != 'Deleted'";
+
+    echo $userDetails['leads_order_view'] . "Exexutive Allow";
+} else {
+    $sql = "SELECT `order`.*, user.name, user.team_Id, 
+            leads.campId, leads.client_name, leads.client_contact_number, 
+            leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
+            recent_payments.receive_payment AS latest_received,
+               recent_payments.pending_payment AS latest_pending,
+               recent_payments.currency AS currency,
+               recent_payments.total_payment AS total_payment   
+            FROM `order`
+            LEFT JOIN user ON `order`.user_id = user.userId
+            LEFT JOIN leads ON `order`.lead_id = leads.id
+             LEFT JOIN (
+                SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
+                FROM order_payments op1
+                INNER JOIN (
+                    SELECT order_id, MAX(timestamp) AS max_timestamp
+                    FROM order_payments
+                    WHERE del_status != 'Deleted'
+                    GROUP BY order_id
+                ) op2 ON op1.order_id = op2.order_id 
+                AND op1.timestamp = op2.max_timestamp
+                WHERE op1.del_status != 'Deleted'
+            ) AS recent_payments ON `order`.orderId = recent_payments.order_id
+            WHERE user.userId = '$userid' AND order.del_status != 'Deleted'";
 }
-//  else {
-//     $sql = "SELECT `order`.*, user.name, user.team_Id, 
-//             leads.campId, leads.client_name, leads.client_contact_number, 
-//             leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
-//             recent_payments.receive_payment AS latest_received,
-//                recent_payments.pending_payment AS latest_pending,
-//                recent_payments.currency AS currency,
-//                recent_payments.total_payment AS total_payment   
-//             FROM `order`
-//             LEFT JOIN user ON `order`.user_id = user.userId
-//             LEFT JOIN leads ON `order`.lead_id = leads.id
-//              LEFT JOIN (
-//                 SELECT op1.order_id, op1.receive_payment, op1.pending_payment, op1.currency, op1.total_payment
-//                 FROM order_payments op1
-//                 INNER JOIN (
-//                     SELECT order_id, MAX(timestamp) AS max_timestamp
-//                     FROM order_payments
-//                     WHERE del_status != 'Deleted'
-//                     GROUP BY order_id
-//                 ) op2 ON op1.order_id = op2.order_id 
-//                 AND op1.timestamp = op2.max_timestamp
-//                 WHERE op1.del_status != 'Deleted'
-//             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
-//             WHERE user.userId = '$userid' AND order.del_status != 'Deleted'";
-// }
 
 // Apply filters based on user input
 if (!empty($ipFilter)) {
@@ -225,8 +246,7 @@ if ($result->num_rows > 0) {
             echo "<td style='background-color: #00ffff;'><span class='badge' style='background-color: #00ffff;'>{$row['order_status']}</span></td>";
         } elseif ($row['order_status'] == 'cancelled') {
             echo "<td style='background-color: #ff1313;'><span class='badge' style='background-color: #00ffff;'>{$row['order_status']}</span></td>";
-        }
-         else {
+        } else {
             echo "<td>{$row['order_status']}</td>";
         }
         echo "<td>{$row['word_count']}</td>";
@@ -264,8 +284,8 @@ if ($result->num_rows > 0) {
                 <button type='submit' class='btn btn-success dm' name='view-payment'><i class='fa fa-eye dmd'>Payment</i></button>
             </form> 
      </td>";
-     
-     
+
+
 
 
         echo "<td class='mt-4'><a href='#invoiceModal' class='open-invoice btn btn-secondary' data-invoice-id='{$row['lead_id']}' data-toggle='modal'>Template</a>

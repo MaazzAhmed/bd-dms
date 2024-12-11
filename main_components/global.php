@@ -696,16 +696,17 @@ if (isset($_POST['update_user'])) {
         $password = $_POST['password'];
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $brandname = $_POST['brandname']; // New brand permissions (array of brand names)
+        $leads_order_view = $_POST['leads_order_view'];
 
         // Update user data logic
         if ($password == null) {
-            $updateUserQuery = "UPDATE `user` SET name=?, email=?, role=?, team_Id=?, shift_id=?, secret_key=?, system_status=?, wfh = ? WHERE userId=?";
+            $updateUserQuery = "UPDATE `user` SET name=?, email=?, role=?, team_Id=?, shift_id=?, secret_key=?, system_status=?, wfh = ?, leads_order_view = ? WHERE userId=?";
             $stmtUpdateUser = mysqli_prepare($conn, $updateUserQuery);
-            mysqli_stmt_bind_param($stmtUpdateUser, "ssssisssi", $name, $email, $role, $teamId, $shiftId, $secret_key, $system_status, $wfh, $userId);
+            mysqli_stmt_bind_param($stmtUpdateUser, "ssssissssi", $name, $email, $role, $teamId, $shiftId, $secret_key, $system_status, $wfh, $leads_order_view, $userId);
         } else {
-            $updateUserQuery = "UPDATE `user` SET name=?, email=?, role=?, team_Id=?, shift_id=?, secret_key=?, system_status=?, password=?, wfh = ? WHERE userId=?";
+            $updateUserQuery = "UPDATE `user` SET name=?, email=?, role=?, team_Id=?, shift_id=?, secret_key=?, system_status=?, password=?, wfh = ?, leads_order_view = ? WHERE userId=?";
             $stmtUpdateUser = mysqli_prepare($conn, $updateUserQuery);
-            mysqli_stmt_bind_param($stmtUpdateUser, "ssssissssi", $name, $email, $role, $teamId, $shiftId, $secret_key, $system_status, $hashedPassword, $wfh, $userId);
+            mysqli_stmt_bind_param($stmtUpdateUser, "ssssisssssi", $name, $email, $role, $teamId, $shiftId, $secret_key, $system_status, $hashedPassword, $wfh, $leads_order_view, $userId);
         }
 
         // Fetch current user data to compare changes
