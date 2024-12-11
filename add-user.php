@@ -416,29 +416,7 @@ if (
 
                                     </div>
 
-                                    <!-- <div class="form-check">
-
-                                        <input class="form-check-input" type="checkbox" id="checkLogManagement" name='permissions[]' value='filter1'>
-
-                                        <label class="form-check-label" for="checkLogManagement">Filter 1</label>
-
-                                    </div>
-
-                                    <div class="form-check">
-
-                                        <input class="form-check-input" type="checkbox" id="checkLogManagement" name='permissions[]' value='filter2'>
-
-                                        <label class="form-check-label" for="checkLogManagement">Filter 2</label>
-
-                                    </div>
-
-                                    <div class="form-check">
-
-                                        <input class="form-check-input" type="checkbox" id="checkLogManagement" name='permissions[]' value='filter3'>
-
-                                        <label class="form-check-label" for="checkLogManagement">Filter 3</label>
-
-                                    </div> -->
+                                   
 
                                 </div>
 
