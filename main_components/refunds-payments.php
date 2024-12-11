@@ -2,6 +2,20 @@
 
 require_once("configration.php");
 session_start();
+
+function getUserData($conn, $tableName, $userIdColumn, $userId){
+    $query = "Select * from $tableName where $userIdColumn = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $userData = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    return $userData;
+
+}
 // Get filter values from the POST request
 $ipFilter = $_POST['ipFilter'] ?? '';
 $orderStatus = $_POST['orderStatus'] ?? '';
@@ -24,6 +38,10 @@ $brandname = $_POST['brandname'] ?? '';
 $offset = ($currentPage - 1) * $recordsPerPage;
 $userid = $_SESSION['id'] ?? '';
 $teamId = $_SESSION['team_id'] ?? '';
+
+
+$userDetails = getUserData($conn, 'user', 'userId', $_SESSION['id']);
+global $userDetails;
 
 // Build the base SQL query based on the user's role
 if ($_SESSION['role'] == 'Admin') {
@@ -52,7 +70,7 @@ if ($_SESSION['role'] == 'Admin') {
                 WHERE op1.del_status != 'Deleted'
             ) AS recent_payments ON `order`.orderId = recent_payments.order_id
             WHERE order.del_status != 'Deleted' AND order.order_status = 'Refund/Deadline'";
-} elseif ($_SESSION['role'] == 'Manager') {
+} elseif ($_SESSION['role'] == 'Manager'  || $_SESSION['role'] == 'Executive' && isset($userDetails['leads_order_view']) && $userDetails['leads_order_view'] != 'Deny' ) {
     $sql = "SELECT `order`.*, user.name, user.team_Id, 
     leads.campId, leads.client_name, leads.client_contact_number, 
     leads.lead_landing_date, leads.client_email, leads.client_info, leads.lead_source, leads.brand_name,
