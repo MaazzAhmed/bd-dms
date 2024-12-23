@@ -35,6 +35,9 @@ $orderconfirmationdate = $_POST['orderconfirmationdate'] ?? '';
 $finaldeadlinetime = $_POST['finaldeadlinetime'] ?? '';
 $brandname = $_POST['brandname'] ?? '';
 
+$startDate = $_POST['startDate'] ?? null;
+$endDate = $_POST['endDate'] ?? null;
+
 
 $offset = ($currentPage - 1) * $recordsPerPage;
 $userid = $_SESSION['id'] ?? '';
@@ -160,8 +163,12 @@ if (!empty($currency)) {
 if (!empty($creatorName)) {
     $sql .= " AND user.name = '$creatorName'";
 }
-if (!empty($orderconfirmationdate)) {
-    $sql .= " AND order.order_confirmation_date = '$orderconfirmationdate'";
+// if (!empty($orderconfirmationdate)) {
+//     $sql .= " AND order.order_confirmation_date = '$orderconfirmationdate'";
+// }
+
+if (!empty($startDate) && !empty($endDate)) {
+    $sql .= " AND order.order_confirmation_date BETWEEN '$startDate' AND '$endDate'";
 }
 if (!empty($finaldeadlinetime)) {
     $sql .= " AND (order.final_deadline_time LIKE '%$finaldeadlinetime%')";
