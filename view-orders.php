@@ -35,17 +35,39 @@ if (
         font-weight: bold;
     }
 
-  
 
-    th  {
-        white-space: nowrap; /* Prevent wrapping of text */
+
+    th {
+        white-space: nowrap;
+        /* color: black !important; */
+        /* Prevent wrapping of text */
     }
-    td  {
-        white-space: nowrap; /* Prevent wrapping of text */
+
+    td {
+        white-space: nowrap;
+        /* Prevent wrapping of text */
     }
 
-
+    td.available {
+        color: black;
+    }
 </style>
+
+<!-- Include jQuery -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"> -->
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+
+<script src="daterangepicker/moment.min.js"></script>
+<script src="daterangepicker/daterangepicker.js"></script>
+<link rel="stylesheet" href="daterangepicker/daterangepicker.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- Include SweetAlert CSS and JS -->
@@ -147,8 +169,8 @@ if (
                                 <div class="col-md-4 mb-3">
                                     <label for="month" class="form-label">Month</label>
                                     <select class="form-select" id="month" name="month">
+                                        <option value="" disabled selected>Select Month</option>
                                         <?php
-                                        $currentMonth = date('F'); // Get the current month (e.g., "October")
                                         $months = [
                                             "January",
                                             "February",
@@ -163,29 +185,24 @@ if (
                                             "November",
                                             "December"
                                         ];
-
-                                        // Loop through months and set the current month as selected
                                         foreach ($months as $month) {
-                                            $selected = ($month == $currentMonth) ? 'selected' : '';
-                                            echo "<option value='$month' $selected>$month</option>";
+                                            echo "<option value='$month'>$month</option>";
                                         }
                                         ?>
                                     </select>
-
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="dateTo" class="form-label">Year</label>
-                                    <!-- <input type="date" class="form-control" id="dateTo"> -->
                                     <select class="form-select" name="year" id="dateTo">
+                                        <option value="" disabled selected>Select Year</option>
                                         <?php
-                                        $currentYear = date('Y'); // Get the current year
                                         for ($year = 2020; $year <= 2035; $year++) {
-                                            $selected = ($year == $currentYear) ? 'selected' : '';
-                                            echo "<option value='$year' $selected>$year</option>";
+                                            echo "<option value='$year'>$year</option>";
                                         }
                                         ?>
                                     </select>
                                 </div>
+
 
                                 <div class="col-md-4 mb-3">
                                     <label for="currency" class="form-label">Currency</label>
@@ -577,10 +594,17 @@ if (
 
 
 
-                <div class="col-md-8">
+                <div class="col-md-4">
 
                     <input type="text" class="form-control" id="ipFilter" placeholder="Enter Title, Order ID, Client Email,Client Name,Client C_No,  :">
 
+                </div>
+
+                <!-- report range -->
+                <div class="col-md-4">
+                    <div id="reportrange" class="form-control" style="cursor: pointer; padding: 6px 7px; border: 1px solid #ccc;">
+                        <span id="pick"></span> <i class="fa fa-caret-down"></i>
+                    </div>
                 </div>
                 <div class="col-2">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -750,10 +774,177 @@ if (
     </div>
 </div>
 
-<!-- End Modal Box -->
+<script>
+    $.noConflict();
+
+    // Initialize DateRangePicker and other filters
+    jQuery(document).ready(function ($) {
+        let start = moment();
+        let end = moment();
+        let currentPage = 1;
+        let recordsPerPage = 25; // Default number of records per page (adjust as needed)
+
+        function setDateRangePicker(start, end) {
+            $('#reportrange #pick').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+
+        // Initialize DateRangePicker
+        if (typeof $.fn.daterangepicker === 'function') {
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                }
+            }, function (start, end) {
+                setDateRangePicker(start, end);
+                $('#reportrange').data('daterangepicker').cleared = false; // Ensure filtering applies
+                loadAnalyticsData();
+            });
+
+            // Set initial value
+            setDateRangePicker(start, end);
+        } else {
+            console.error('DateRangePicker plugin is not available.');
+        }
+
+        // Event listener for other filters
+        $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname')
+            .on('input change', function () {
+                currentPage = 1; // Reset to first page
+                updateActiveFilters();
+                toggleResetButton();
+                loadAnalyticsData();
+            });
+
+        // Reset filters
+        $('#resetFiltersBtn').on('click', function () {
+            resetFilters();
+            updateActiveFilters();
+            toggleResetButton();
+            loadAnalyticsData();
+        });
+
+        // Pagination click handling
+        $(document).on('click', '.pagination-link', function (e) {
+            e.preventDefault();
+            currentPage = $(this).data('page'); // Update current page
+            loadAnalyticsData();
+        });
+
+        // Show or hide reset button
+        function toggleResetButton() {
+            const hasActiveFilters = Object.values(getFilterValues()).some(value => value && value.trim() !== '');
+            hasActiveFilters ? $('#resetFiltersBtn').fadeIn() : $('#resetFiltersBtn').fadeOut();
+        }
+
+        // Reset all filters to default
+        function resetFilters() {
+            $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname').val('');
+
+            // Reset daterangepicker
+            if ($('#reportrange').data('daterangepicker')) {
+                const daterangepicker = $('#reportrange').data('daterangepicker');
+
+                // Clear the applied date range
+                daterangepicker.cleared = true;
+                setDateRangePicker(moment(), moment());
+            }
+
+            currentPage = 1; // Reset to the first page
+        }
+
+        // Get current filter values
+        function getFilterValues() {
+            const dateRangePicker = $('#reportrange').data('daterangepicker');
+
+            return {
+                ipFilter: $('#ipFilter').val(),
+                orderStatus: $('#orderStatus').val(),
+                month: $('#month').val(),
+                year: $('#dateTo').val(),
+                leadsource: $('#leadsource').val(),
+                currency: $('#currency').val(),
+                creatorName: $('#creatorName').val(),
+                orderconfirmationdate: $('#orderconfirmationdate').val(),
+                finaldeadlinetime: $('#finaldeadlinetime').val(),
+                brandname: $('#brandname').val(),
+                startDate: dateRangePicker && !dateRangePicker.cleared ? dateRangePicker.startDate.format('YYYY-MM-DD') : null,
+                endDate: dateRangePicker && !dateRangePicker.cleared ? dateRangePicker.endDate.format('YYYY-MM-DD') : null,
+            };
+        }
+
+        // Update active filters display
+        function updateActiveFilters() {
+            const filterValues = getFilterValues();
+            const activeFilters = [];
+
+            for (const [key, value] of Object.entries(filterValues)) {
+                if (value && value.trim() !== '') {
+                    const formattedKey = formatFilterName(key);
+                    activeFilters.push(`${formattedKey}: ${value}`);
+                }
+            }
+
+            $('#filterList').empty();
+            if (activeFilters.length > 0) {
+                $('#activeFilters').show();
+                activeFilters.forEach(filter => $('#filterList').append('<li>' + filter + '</li>'));
+            } else {
+                $('#activeFilters').hide();
+            }
+        }
+
+        // Format filter names
+        function formatFilterName(name) {
+            return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        }
+
+        // Load analytics data via Ajax
+        function loadAnalyticsData() {
+            const filters = getFilterValues();
+            console.log('Filters:', filters);
+
+            $.ajax({
+                url: 'main_components/view-orders.php',
+                type: 'POST',
+                data: {
+                    ...filters,
+                    currentPage,
+                    recordsPerPage,
+                },
+                success: function (response) {
+                    $('#analyticsDataTable tbody').html(response);
+                    const recordCount = $('#analyticsDataTable tbody tr').length;
+                    $('#recordCountBadge').text(recordCount - 1);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', status, error);
+                }
+            });
+        }
+
+        // Load initial data
+        loadAnalyticsData();
+    });
+</script>
 
 
-<!--  -->
+<script>
+    console.log(getFilterValues());
+
+</script>
+
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+
 <script>
     const tableContainer = document.querySelector('.table-responsive');
 
@@ -786,136 +977,6 @@ if (
         tableContainer.scrollLeft = scrollLeft - walk;
     });
 </script>
-
-<!--  -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-    $(document).ready(function() {
-        let currentPage = 1;
-        let recordsPerPage = 25;
-
-        // Load analytics data initially
-        loadAnalyticsData();
-
-        // Monitor changes in filters
-        $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname')
-            .on('input change', function() {
-                currentPage = 1; // Reset to first page when filters change
-                updateActiveFilters();
-                toggleResetButton();
-                loadAnalyticsData();
-            });
-
-        // Reset filters on button click
-        $('#resetFiltersBtn').on('click', function() {
-            resetFilters();
-            updateActiveFilters();
-            toggleResetButton();
-            loadAnalyticsData();
-        });
-
-        // Handle pagination click
-        $(document).on('click', '.pagination-link', function(e) {
-            e.preventDefault();
-            currentPage = $(this).data('page'); // Update the current page
-            loadAnalyticsData();
-        });
-
-        // Show or hide the reset button
-        function toggleResetButton() {
-            const hasActiveFilters = Object.values(getFilterValues()).some(
-                value => value && value.trim() !== '' // Check if any filter is active
-            );
-
-            console.log('Has active filters:', hasActiveFilters); // Debugging
-
-            if (hasActiveFilters) {
-                $('#resetFiltersBtn').fadeIn(); // Show reset button
-            } else {
-                $('#resetFiltersBtn').fadeOut(); // Hide reset button
-            }
-        }
-
-        // Reset all filters to default
-        function resetFilters() {
-            $('#ipFilter, #orderStatus, #month, #dateTo, #leadsource, #currency, #creatorName, #orderconfirmationdate, #finaldeadlinetime, #brandname').val('');
-            currentPage = 1; // Reset to first page
-        }
-
-        // Get current filter values
-        function getFilterValues() {
-            return {
-                ipFilter: $('#ipFilter').val(),
-                orderStatus: $('#orderStatus').val(),
-                month: $('#month').val(),
-                year: $('#dateTo').val(),
-                leadsource: $('#leadsource').val(),
-                currency: $('#currency').val(),
-                creatorName: $('#creatorName').val(),
-                orderconfirmationdate: $('#orderconfirmationdate').val(),
-                finaldeadlinetime: $('#finaldeadlinetime').val(),
-                brandname: $('#brandname').val()
-            };
-        }
-
-        // Update active filters display
-        function updateActiveFilters() {
-            const filterValues = getFilterValues();
-            const activeFilters = [];
-
-            for (const [key, value] of Object.entries(filterValues)) {
-                if (value && value.trim() !== '') {
-                    const formattedKey = formatFilterName(key);
-                    activeFilters.push(`${formattedKey}: ${value}`);
-                }
-            }
-
-            $('#filterList').empty(); // Clear previous filters
-
-            if (activeFilters.length > 0) {
-                $('#activeFilters').show(); // Show active filters section
-                activeFilters.forEach(filter => {
-                    $('#filterList').append('<li>' + filter + '</li>'); // Add each filter
-                });
-            } else {
-                $('#activeFilters').hide(); // Hide section if no filters
-            }
-        }
-
-        // Format filter names (e.g., 'orderStatus' to 'Order Status')
-        function formatFilterName(name) {
-            return name
-                .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-                .replace(/^./, str => str.toUpperCase()); // Capitalize first letter
-        }
-
-        // Load analytics data via Ajax
-        function loadAnalyticsData() {
-            $.ajax({
-                url: 'main_components/view-orders.php',
-                type: 'POST',
-                data: {
-                    ...getFilterValues(),
-                    currentPage,
-                    recordsPerPage
-                },
-                success: function(response) {
-                    $('#analyticsDataTable tbody').html(response); // Update table
-
-                    const recordCount = $('#analyticsDataTable tbody tr').length;
-                    $('#recordCountBadge').text(recordCount - 1); // Update record count badge
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', status, error);
-                    alert('Error fetching data.');
-                }
-            });
-        }
-    });
-</script>
-
-
-
 
 <!-- Include jQuery before this script -->
 <script>
@@ -1006,6 +1067,10 @@ if (
         });
     }
 </script>
+
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
