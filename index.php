@@ -171,65 +171,136 @@
 				<h5 class="mb-0 text-2xl text-white">Filters</h5>
 
 			</div>
+			<div class="row">
+
+				<div class="col-md-4">
+					<div id="reportrange" class="form-control" style="cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; ">
+						<i class="fa fa-calendar"></i>&nbsp;
+						<span></span> <i class="fa fa-caret-down"></i>
+					</div>
+				</div>
+				<?php if ($_SESSION['role'] == 'Admin') : ?>
+					<div class="col-md-4">
+						<select id="inputTeam" name="teamId" class="form-select">
+
+							<option selected disabled>Select Team</option>
+							<?php
+
+							if ($_SESSION['role'] == 'Admin') {
+								$teams = getTeams($conn);
+							}
+							?>
 
 
-			<div id="reportrange" class="form-control" style="cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 33%">
-				<i class="fa fa-calendar"></i>&nbsp;
-				<span></span> <i class="fa fa-caret-down"></i>
+							<!-- Show all teams for Admin -->
+							<?php foreach ($teams as $team) : ?>
+								<option value="<?php echo $team['teamId']; ?>"><?php echo $team['team_name']; ?></option>
+							<?php endforeach; ?>
+
+
+						</select>
+					</div>
+
+					<div class="col-md-4">
+						<select name="tlead" id="inputState" class="form-select">
+
+							<option selected disabled>Select User</option>
+
+							<?php
+
+							// Display roles in dropdown
+
+							$username = getName($conn);
+
+							foreach ($username as $username) {
+
+								echo "<option value='" . $username['userId'] . "'>" . $username['name'] . "</option>";
+							}
+
+							?>
+
+						</select>
+					</div>
+			</div>
+
+			<div class="row mt-1">
+				<div class="col-md-4">
+					<select name="brandname" class="form-select " required id="inputCountry">
+
+						<option selected disabled>Select Brand</option>
+
+						<?php
+						$brands = getBrands($conn);
+						foreach ($brands as $brand) {
+							echo "<option value='" . $brand['brand_name'] . "'>" . $brand['brand_name'] . "</option>";
+						}
+						?>
+
+					</select>
+				</div>
+				<div class="col-md-4">
+				<button type="button" class="btn btn-success" id="resetFiltersBtnn">Reset Filters</button>
+				</div>
+
+
+			<?php endif; ?>
+			</div>
+
+
+		</div>
+
+
+	</div>
+	<div class="wrapper">
+		<div class="page-wrapper" style="margin-top: 0px !important;">
+			<div class="page-content">
+				<div class="grid grid-cols-1 gap-4 px-1 mt-0 mb-[90px] sm:grid-cols-3 sm:px-8">
+
+					<!-- Total Payment -->
+					<div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+						<div class="p-4 bg-green-400">
+							<!-- Updated to a dollar sign for Total Payment -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M12 1C5.935 1 1 5.935 1 12s4.935 11 11 11 11-4.935 11-11S18.065 1 12 1zm.5 17h-1v-1h1v1zm1.1-3.8c-.9.3-1.5.5-1.5 1.3v.5h-1v-.5c0-1 .8-1.5 1.5-1.8.6-.2.9-.4.9-.7 0-.5-.4-.8-.9-.8s-.9.3-.9.8h-1c0-1 .8-1.7 1.9-1.7s1.9.7 1.9 1.7c0 .7-.5 1.1-1.4 1.4z" />
+							</svg>
+						</div>
+						<div class="px-4 text-gray-700">
+							<h3 class="text-sm tracking-wider text-zinc-800">Total Payment</h3>
+							<p class="text-3xl" id="total_payment">0</p>
+						</div>
+					</div>
+
+					<!-- Pending Payment -->
+					<div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+						<div class="p-4 bg-blue-400">
+							<!-- Updated to a clock icon for Pending Payment -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M12 1.5A10.5 10.5 0 1 0 22.5 12 10.511 10.511 0 0 0 12 1.5zm0 19a8.5 8.5 0 1 1 8.5-8.5 8.51 8.51 0 0 1-8.5 8.5zm.75-12H12a.5.5 0 0 0-.5.5v4.25a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-2.25V9a.5.5 0 0 0-.5-.5z" />
+							</svg>
+						</div>
+						<div class="px-4 text-gray-700">
+							<h3 class="text-sm tracking-wider text-zinc-800">Pending Payment</h3>
+							<p class="text-3xl" id="pending_payment">0</p>
+						</div>
+					</div>
+
+					<!-- Total No Of Orders -->
+					<div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+						<div class="p-4 bg-indigo-400">
+							<!-- Updated to a package/box icon for Total No Of Orders -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M21 6.21l-9-5-9 5L12 11.5l9-5.29zM2.03 8.46L11 13.63v8.92L2 17.38zm9.97 13.09v-8.92L21.97 8.46 13 13.63z" />
+							</svg>
+						</div>
+						<div class="px-4 text-gray-700">
+							<h3 class="text-sm tracking-wider text-zinc-800">Total No Of Orders</h3>
+							<p class="text-3xl" id="total_orders">0</p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-
-	<div class="wrapper">
-    <div class="page-wrapper" style="margin-top: 0px !important;">
-        <div class="page-content">
-            <div class="grid grid-cols-1 gap-4 px-1 mt-0 mb-[90px] sm:grid-cols-3 sm:px-8">
-                
-                <!-- Total Payment -->
-                <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-                    <div class="p-4 bg-green-400">
-                        <!-- Updated to a dollar sign for Total Payment -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 1C5.935 1 1 5.935 1 12s4.935 11 11 11 11-4.935 11-11S18.065 1 12 1zm.5 17h-1v-1h1v1zm1.1-3.8c-.9.3-1.5.5-1.5 1.3v.5h-1v-.5c0-1 .8-1.5 1.5-1.8.6-.2.9-.4.9-.7 0-.5-.4-.8-.9-.8s-.9.3-.9.8h-1c0-1 .8-1.7 1.9-1.7s1.9.7 1.9 1.7c0 .7-.5 1.1-1.4 1.4z"/>
-                        </svg>
-                    </div>
-                    <div class="px-4 text-gray-700">
-                        <h3 class="text-sm tracking-wider text-zinc-800">Total Payment</h3>
-                        <p class="text-3xl" id="total_payment">0</p>
-                    </div>
-                </div>
-
-                <!-- Pending Payment -->
-                <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-                    <div class="p-4 bg-blue-400">
-                        <!-- Updated to a clock icon for Pending Payment -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 1.5A10.5 10.5 0 1 0 22.5 12 10.511 10.511 0 0 0 12 1.5zm0 19a8.5 8.5 0 1 1 8.5-8.5 8.51 8.51 0 0 1-8.5 8.5zm.75-12H12a.5.5 0 0 0-.5.5v4.25a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-2.25V9a.5.5 0 0 0-.5-.5z"/>
-                        </svg>
-                    </div>
-                    <div class="px-4 text-gray-700">
-                        <h3 class="text-sm tracking-wider text-zinc-800">Pending Payment</h3>
-                        <p class="text-3xl" id="pending_payment">0</p>
-                    </div>
-                </div>
-
-                <!-- Total No Of Orders -->
-                <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-                    <div class="p-4 bg-indigo-400">
-                        <!-- Updated to a package/box icon for Total No Of Orders -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M21 6.21l-9-5-9 5L12 11.5l9-5.29zM2.03 8.46L11 13.63v8.92L2 17.38zm9.97 13.09v-8.92L21.97 8.46 13 13.63z"/>
-                        </svg>
-                    </div>
-                    <div class="px-4 text-gray-700">
-                        <h3 class="text-sm tracking-wider text-zinc-800">Total No Of Orders</h3>
-                        <p class="text-3xl" id="total_orders">0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 	<!-- end table -->
 
@@ -260,74 +331,99 @@
 
 
 
-	
+
 	<script type="text/javascript">
-	$(function() {
-		var start = moment();
-		var end = moment();
+    $(function () {
+        var start = moment();
+        var end = moment();
 
-		function cb(start, end) {
-			$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-			// Send the date range to the server via AJAX
-			$.ajax({
-				url: 'main_components/dashboard_orders.php',
-				type: 'POST',
-				data: {
-					start_date: start.format('YYYY-MM-DD'),
-					end_date: end.format('YYYY-MM-DD')
-				},
-				success: function(response) {
-					console.log("Response from server:", response); // Log raw response for debugging
-					try {
-						let data = JSON.parse(response);
-						
-						// Check if the data contains the necessary fields
-						const receivePayment = data.receive_payment ?? '0';
-						const pendingPayment = data.pending_payment ?? '0';
-						const totalOrders = data.total_orders ?? '0';
+        function cb(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            fetchData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+        }
 
-						// Display data on the page
-						$('#total_payment').text('$' + receivePayment); // Change this line to display receive_payment
-						$('#pending_payment').text('$' + pendingPayment);
-						$('#total_orders').text(totalOrders);
-					} catch (e) {
-						console.error("Error parsing JSON response: ", e, response);
-						alert("There was an error processing the data. Check console for details.");
-					}
-				},
-				error: function(xhr, status, error) {
-					console.error("AJAX error:", error);
-					alert("AJAX request failed. Check console for details.");
-				}
-			});
-		}
+        function fetchData(startDate, endDate) {
+            const filters = {
+                start_date: startDate,
+                end_date: endDate,
+                teamId: $('#inputTeam').val(),
+                userId: $('#inputState').val(),
+                brandName: $('#inputCountry').val()
+            };
 
-		$('#reportrange').daterangepicker({
-			startDate: start,
-			endDate: end,
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			}
-		}, cb);
+            console.log("Applied Filters:", filters);
 
-		cb(start, end);
-	});
+            // Send data to the server via AJAX
+            $.ajax({
+                url: 'main_components/dashboard_orders.php',
+                type: 'POST',
+                data: filters,
+                success: function (response) {
+                    console.log("Response from server:", response);
+                    try {
+                        let data = JSON.parse(response);
+
+                        // Update fields with server response
+                        const receivePayment = data.receive_payment ?? '0';
+                        const pendingPayment = data.pending_payment ?? '0';
+                        const totalOrders = data.total_orders ?? '0';
+
+                        $('#total_payment').text('$' + receivePayment);
+                        $('#pending_payment').text('$' + pendingPayment);
+                        $('#total_orders').text(totalOrders);
+                    } catch (e) {
+                        console.error("Error parsing JSON response:", e, response);
+                        alert("There was an error processing the data. Check console for details.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    alert("AJAX request failed. Check console for details.");
+                }
+            });
+        }
+
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb);
+
+        cb(start, end);
+
+        // Listen for filter changes
+        $('#inputTeam, #inputState, #inputCountry').on('change', function () {
+            const startDate = $('#reportrange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+            const endDate = $('#reportrange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            fetchData(startDate, endDate);
+        });
+
+        // Reset all filters
+        $('#resetFiltersBtnn').on('click', function () {
+            $('#inputTeam, #inputState, #inputCountry').val('');
+            const daterangepicker = $('#reportrange').data('daterangepicker');
+            daterangepicker.setStartDate(moment());
+            daterangepicker.setEndDate(moment());
+            cb(moment(), moment());
+        });
+    });
 </script>
 
 
 
-	
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	<!-- Bootstrap JS -->
 	<script src="assets/js/bootstrap.bundle.min.js"></script>
 	<!--plugins-->

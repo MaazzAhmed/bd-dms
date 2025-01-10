@@ -1089,45 +1089,79 @@ if (isset($_POST['update_permissions'])) {
 
 // Create Team Form
 
+// if (isset($_POST['create-team'])) {
+
+//     $teamName = $_POST['tname'];
+
+//     $teamLead = $_POST['tlead'];
+
+
+
+//     // Insert into team table
+
+//     $insertTeamQuery = "INSERT INTO team (team_name, team_lead) VALUES (?, ?)";
+
+//     $stmtTeam = mysqli_prepare($conn, $insertTeamQuery);
+
+//     mysqli_stmt_bind_param($stmtTeam, "si", $teamName, $teamLead);
+
+
+
+//     // Execute the statement and check for success
+
+//     $executeResult = mysqli_stmt_execute($stmtTeam);
+
+
+
+//     // Close statement
+
+//     mysqli_stmt_close($stmtTeam);
+
+
+
+//     if ($executeResult) {
+
+//         $_SESSION['Createteam'] = 'Team created successfully!.';
+//     } else {
+
+//         $_SESSION['Createteam'] = 'Error creating team. Please try again.';
+//     }
+// }
+
 if (isset($_POST['create-team'])) {
 
     $teamName = $_POST['tname'];
+    $teamLead = $_POST['tlead']; 
 
-    $teamLead = $_POST['tlead'];
-
-
-
-    // Insert into team table
-
+    // Step 1: Insert into team table
     $insertTeamQuery = "INSERT INTO team (team_name, team_lead) VALUES (?, ?)";
-
     $stmtTeam = mysqli_prepare($conn, $insertTeamQuery);
-
     mysqli_stmt_bind_param($stmtTeam, "si", $teamName, $teamLead);
-
-
-
-    // Execute the statement and check for success
-
     $executeResult = mysqli_stmt_execute($stmtTeam);
-
-
-
-    // Close statement
-
-    mysqli_stmt_close($stmtTeam);
-
-
 
     if ($executeResult) {
 
-        $_SESSION['Createteam'] = 'Team created successfully!.';
-    } else {
+        $teamId = mysqli_insert_id($conn); 
+        
+        $updateUserQuery = "UPDATE user SET team_Id = ? WHERE userId = ?";
+        $stmtUser = mysqli_prepare($conn, $updateUserQuery);
+        mysqli_stmt_bind_param($stmtUser, "ii", $teamId, $teamLead);
+        $updateResult = mysqli_stmt_execute($stmtUser);
 
+        // Step 4: Check if the user's teamId was updated successfully
+        if ($updateResult) {
+            $_SESSION['Createteam'] = 'Team created and assigned successfully!';
+        } else {
+            $_SESSION['Createteam'] = 'Error assigning team to the team lead.';
+        }
+
+        // Close the user statement
+        mysqli_stmt_close($stmtUser);
+    } else {
         $_SESSION['Createteam'] = 'Error creating team. Please try again.';
     }
-}
 
+}
 
 
 // Function to get teams from the database with team lead names

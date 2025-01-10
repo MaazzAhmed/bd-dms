@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2024 at 08:38 AM
+-- Generation Time: Dec 26, 2024 at 11:43 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -78,8 +78,10 @@ CREATE TABLE `brand_permissions` (
 --
 
 INSERT INTO `brand_permissions` (`id`, `brandpermission`, `user_id`) VALUES
-(3, 'Gogrades', 98),
-(4, 'Gogrades', 96);
+(5, 'Gogrades', 47),
+(7, 'Gogrades', 96),
+(8, 'Gogrades', 99),
+(11, 'EduResearchers', 98);
 
 -- --------------------------------------------------------
 
@@ -130,7 +132,7 @@ CREATE TABLE `delete_keys` (
 --
 
 INSERT INTO `delete_keys` (`id`, `key`) VALUES
-(1, 'maazdd'),
+(1, 'maaz'),
 (2, 'Q2lhWnJvMEh4K3JDbyt3WjNERjBtUT09Ojr6cr321s2oLzyKMAGlwk/C'),
 (3, 'QVptM3ROTURad2hqdGtIbkJXVlY1Zz09OjoQUEWmzTAQ0Rj97JgeWuNp'),
 (4, 'Wk9hbmpMZ0w2K3g2Z29ScFh6VWd2Zz09Ojq5peR5bbXFgcZq+bWiyLRK'),
@@ -201,7 +203,9 @@ INSERT INTO `leads` (`id`, `campId`, `client_name`, `client_contact_number`, `le
 (22, 'dsadsa', 'dani', '32423323223', '2024-10-23', 'Pakistan', 'dani@gmail.com', 'New', 'Social Media Marketing', 97, 'EduResearchers', 'EduResearchers 5345324533442', NULL, '', 'Facebook', 'Live', 'Not_Deleted'),
 (23, '332433', 'abc', '04350450432', '2024-10-23', 'Norway', 'abc@gmail.com', 'Referral', 'Refer', 97, 'Gogrades', 'GoGrades 324322323', NULL, 'maaz', '', 'Live', 'Not_Deleted'),
 (24, '32432', 'dd', '32434324324', '2024-10-23', 'United Arab Emirates', 'dsas@gmail.com', 'New', 'Through Email', 97, 'Gogrades', 'GoGrades 324322323', NULL, '', '', 'Live', 'Not_Deleted'),
-(25, '32642', 'alex', '124521', '2024-10-23', 'Mozambique', 'alex@gmail.com', 'Recurring', 'PPC', 97, 'Gogrades', 'GoGrades 324322323', NULL, 'alex', '', 'Core', 'Not_Deleted');
+(25, '32642', 'alex', '124521', '2024-10-23', 'Mozambique', 'alex@gmail.com', 'Recurring', 'PPC', 97, 'Gogrades', 'GoGrades 324322323', NULL, 'alex', '', 'Core', 'Not_Deleted'),
+(26, '432', 'ddmd', '23232', '2024-12-12', 'Pakistan', 'ddmdmdmd@gmail.com', 'New', 'Organic', 96, 'Gogrades', 'GoGrades 324322323', NULL, NULL, '', 'Live', 'Not_Deleted'),
+(27, '432', 'ddmd', '23232', '2024-12-12', 'Pakistan', 'ddmdmdmd@gmail.com', 'New', 'Organic', 96, 'Gogrades', 'GoGrades 324322323', NULL, NULL, '', 'Live', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -267,7 +271,9 @@ CREATE TABLE `order` (
 INSERT INTO `order` (`orderId`, `order_id_input`, `order_title`, `order_status`, `payment_status`, `word_count`, `whatsapp_account`, `payment_account`, `portal_due_date`, `final_deadline_time`, `order_confirmation_date`, `pending_payment_Month`, `pending_payment_status`, `writers_team`, `plan`, `assigned_to`, `year`, `years`, `comment`, `client_requirements`, `user_id`, `lead_id`, `order_confirmation_month`, `del_status`) VALUES
 (47, 32, 'tit', 'Converted', '----	', '555', '453435', 'HBL', '2024-11-09', '2024-11-13 03:50:00', '2024-10-29', '', '', 'd', 'Premium', 'Maaz', 2024, 0, 'dd', 'dd dd ', 97, 22, 'October', 'Not_Deleted'),
 (61, 4230, 'di', 'Cancelled', 'Half Payment', '333', '657546', 'Meezan', '2024-11-02', '2024-11-06 12:54:00', '2024-10-30', '', '', 'mddmddmdmddmmdm', 'Classic', 'mddddmmddmddmddmmdmddmm', 2024, 0, 'dsdsd', 'dndndnd', 97, 25, 'October', 'Not_Deleted'),
-(62, 342, 'dd', 'Refund/Deadline', 'Half Payment', '432', '4654', 'Meezan', '2024-11-07', '2024-11-15T11:38', '2024-11-01', '', '', 'fdg', 'Premium', 'fdg', 2024, 0, 'g', 'gfd', 98, 19, 'November', 'Not_Deleted');
+(62, 342, 'dd', 'Refund/Deadline', 'Half Payment', '432', '4654', 'Meezan', '2024-11-07', '2024-11-15T11:38', '2024-11-01', '', '', 'fdg', 'Premium', 'fdg', 2024, 0, 'g', 'gfd', 98, 19, 'November', 'Not_Deleted'),
+(63, 4230, 'ttttttttt', 'Follow up', 'Half Payment', '333', '233232', 'Meezan', '2025-01-10', '2024-12-14 11:35:00', '2024-12-14', '', '', 'abc', 'Classic', 'ddd', 2024, 0, 'ddd', 'ddddd', 97, 24, 'December', 'Not_Deleted'),
+(64, 4230, 'ttttttttt', 'Follow up', 'Half Payment', '333', '233232', 'Meezan', '2025-01-10', '2024-12-14 11:35:00', '2024-12-14', '', '', 'abc', 'Classic', 'ddd', 2024, 0, 'ddd', 'ddddd', 97, 24, 'December', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -300,7 +306,10 @@ INSERT INTO `order_payments` (`id`, `pending_payment`, `receive_payment`, `month
 (21, '200', '200', 'October', 'AUD', '2024-10-29', 47, 2024, '2024-10-30 11:03:27', '1400', '', '', 'Not_Deleted'),
 (31, '100', '400', 'October', 'AUD', '2024-10-30', 61, 2024, '2024-10-31 06:02:24', '500', 'upsale', '200', 'Not_Deleted'),
 (33, '50', '50', 'October', 'AUD', '2024-10-31', 61, 2024, '2024-10-31 10:52:58', '500', '', '', 'Not_Deleted'),
-(34, '100', '500', 'November', 'AZN', '2024-11-01', 62, 2024, '2024-11-01 06:39:00', '600', '', '', 'Not_Deleted');
+(34, '100', '500', 'November', 'AZN', '2024-11-01', 62, 2024, '2024-11-01 06:39:00', '700', 'upsale', '600', 'Not_Deleted'),
+(35, '444', '10', 'December', 'USD', '2024-12-14', 63, 2024, '2024-12-14 06:35:25', '454', '', '', 'Not_Deleted'),
+(36, '444', '10', 'December', 'USD', '2024-12-14', 64, 2024, '2024-12-14 06:35:25', '1005', 'upsale', '1004', 'Not_Deleted'),
+(37, '400', '44', 'December', 'USD', '2024-12-14', 64, 2024, '2024-12-14 06:38:01', '1005', '', '1004', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -335,10 +344,11 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`permissionid`, `lead_management`, `log_management`, `view_users`, `Add_user`, `add_shift`, `view_shift`, `view_team`, `add_team`, `add_lead`, `view_lead`, `add_core_lead`, `view_core_lead`, `view_order`, `filter1`, `filter2`, `filter3`, `user_id`, `del_status`) VALUES
-(67, 'Deny', 'Deny', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 97, 'Not_Deleted'),
+(67, 'Deny', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Deny', 97, 'Not_Deleted'),
 (68, 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 96, 'Not_Deleted'),
-(69, 'Deny', 'Deny', 'Allow', 'Deny', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 47, 'Not_Deleted'),
-(70, 'Deny', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 98, 'Not_Deleted');
+(69, 'Deny', 'Deny', 'Allow', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 47, 'Not_Deleted'),
+(70, 'Deny', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Allow', 'Deny', 98, 'Not_Deleted'),
+(71, 'Deny', 'Deny', 'Allow', 'Deny', 'Deny', 'Allow', 'Deny', 'Deny', 'Deny', 'Allow', 'Allow', 'Allow', 'Deny', 'Deny', 'Deny', 'Deny', 99, 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -422,10 +432,13 @@ CREATE TABLE `team` (
 --
 
 INSERT INTO `team` (`teamId`, `team_name`, `team_lead`) VALUES
+(1, 'Default', 97),
 (2, 'Name', 47),
 (5, 'Writer C', 95),
 (7, 'developer', 58),
-(8, 'Marketing', 46);
+(8, 'Marketing', 46),
+(11, 'DAD', 95),
+(13, 'Testing', 99);
 
 -- --------------------------------------------------------
 
@@ -446,6 +459,7 @@ CREATE TABLE `user` (
   `system_status` enum('Blocked','Active','Off') DEFAULT NULL,
   `secret_key` varchar(500) DEFAULT NULL,
   `wfh` varchar(250) NOT NULL DEFAULT 'Deny',
+  `leads_order_view` enum('Allow','Deny') NOT NULL DEFAULT 'Deny',
   `del_status` varchar(250) NOT NULL DEFAULT 'Not_Deleted'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -453,13 +467,14 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userId`, `name`, `email`, `password`, `role`, `last_login`, `last_id_address`, `team_Id`, `shift_id`, `system_status`, `secret_key`, `wfh`, `del_status`) VALUES
-(46, 'admin', 'admin@gmail.com', '$2y$10$L1vUIr.YSjVW.58zCdnjguCGGlXvNMNUm4/tLvasK7gDjfPdn4SSy', 'Admin', '2024-03-21 14:26:34', '::1', 2, 14, 'Active', '123', 'Deny', 'Not_Deleted'),
-(47, 'editors', 'editors@gmail.com', '$2y$10$nD9fFaa1EOuo75WUBkSzCuBhMT0gs6z/Ae.w51jr60/HNHn6QuToK', '', '2024-02-26 16:51:44', '39.51.69.16', 8, 14, 'Active', '123', 'Deny', 'Not_Deleted'),
-(95, 'Qadama Ahmed Khan', 'qadamaalam@gmail.com', '$2y$10$VOKLWpw5xDzPvdcveLG/g.hafFhJliE8Bhma4BfdlNfQQDn0BiLS6', 'Admin', '2024-02-12 18:14:55', '39.57.195.226', 7, 25, 'Active', '123', 'Deny', 'Not_Deleted'),
-(96, 'execu', 'exe@gmail.com', '$2y$10$fCrB/uwHr3nJetpUexEsOOkHRXUScYouPL0q3ejnCXUM0vLvt7YKy', 'Executive', '2024-11-04 14:49:50', '::1', 7, 15, 'Active', '123', 'Allow', 'Not_Deleted'),
-(97, 'Maaz', 'maaza42101@gmail.com', '$2y$10$A/unfoK6SHS0KzuDvjL9zOvlN0baypL.H07.3Tjnhours8msvyYXi', 'Admin', '2024-11-05 11:09:50', '::1', 2, 14, 'Active', '123', 'Allow', 'Not_Deleted'),
-(98, 'dani', 'dani@gmail.com', '$2y$10$97semRhlzhFDq/NsJtsW4OmUhCMsdja038u6wE00jymnCabxeOc/C', 'Manager', '2024-11-05 17:20:21', '::1', 7, 14, 'Active', '123', 'Allow', 'Not_Deleted');
+INSERT INTO `user` (`userId`, `name`, `email`, `password`, `role`, `last_login`, `last_id_address`, `team_Id`, `shift_id`, `system_status`, `secret_key`, `wfh`, `leads_order_view`, `del_status`) VALUES
+(46, 'admin', 'admin@gmail.com', '$2y$10$L1vUIr.YSjVW.58zCdnjguCGGlXvNMNUm4/tLvasK7gDjfPdn4SSy', 'Admin', '2024-03-21 14:26:34', '::1', 2, 14, 'Active', '123', 'Deny', 'Deny', 'Not_Deleted'),
+(47, 'editors', 'editors@gmail.com', '$2y$10$nD9fFaa1EOuo75WUBkSzCuBhMT0gs6z/Ae.w51jr60/HNHn6QuToK', 'Executive', '2024-02-26 16:51:44', '39.51.69.16', 8, 14, 'Active', '123', 'Allow', 'Allow', 'Not_Deleted'),
+(95, 'Qadama Ahmed Khan', 'qadamaalam@gmail.com', '$2y$10$VOKLWpw5xDzPvdcveLG/g.hafFhJliE8Bhma4BfdlNfQQDn0BiLS6', 'Admin', '2024-02-12 18:14:55', '39.57.195.226', 7, 25, 'Active', '123', 'Deny', 'Deny', 'Deleted'),
+(96, 'execu', 'exe@gmail.com', '$2y$10$fCrB/uwHr3nJetpUexEsOOkHRXUScYouPL0q3ejnCXUM0vLvt7YKy', 'Executive', '2024-12-12 17:38:17', '::1', 7, 15, 'Active', '123', 'Allow', 'Allow', 'Not_Deleted'),
+(97, 'Maaz', 'maaza42101@gmail.com', '$2y$10$A/unfoK6SHS0KzuDvjL9zOvlN0baypL.H07.3Tjnhours8msvyYXi', 'Admin', '2024-12-04 12:07:52', '::1', 2, 14, 'Active', '123', 'Allow', 'Deny', 'Not_Deleted'),
+(98, 'dani', 'dani@gmail.com', '$2y$10$97semRhlzhFDq/NsJtsW4OmUhCMsdja038u6wE00jymnCabxeOc/C', 'Manager', '2024-12-10 16:08:14', '::1', 7, 14, 'Active', '123', 'Allow', 'Allow', 'Not_Deleted'),
+(99, 'Executive', 'executive@gmail.com', '$2y$10$V7JvNPP2Mg1KPEQ9vXp8QuC4MRpIU5gKXtBtIYhGNd0QpVe9S.88W', 'Manager', NULL, NULL, 13, 25, 'Active', '123', 'Deny', 'Deny', 'Not_Deleted');
 
 -- --------------------------------------------------------
 
@@ -605,7 +620,7 @@ ALTER TABLE `bank_accounts`
 -- AUTO_INCREMENT for table `brand_permissions`
 --
 ALTER TABLE `brand_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `core_leads`
@@ -629,7 +644,7 @@ ALTER TABLE `email_setting`
 -- AUTO_INCREMENT for table `leads`
 --
 ALTER TABLE `leads`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `lead_source`
@@ -641,19 +656,19 @@ ALTER TABLE `lead_source`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `order_payments`
 --
 ALTER TABLE `order_payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `permissionid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `permissionid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `plan`
@@ -677,13 +692,13 @@ ALTER TABLE `shift`
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `teamId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `teamId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT for table `whatsapp`

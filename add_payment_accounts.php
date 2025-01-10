@@ -135,9 +135,6 @@ if (!isset($_SESSION['role']) ||
 <?php
 
 
-
-
-
 // Check if session message is set
 
 if (isset($_SESSION['Createbank'])) {

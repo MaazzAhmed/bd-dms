@@ -297,18 +297,47 @@ if (
                                 <div class="col-md-6">
                                     <label for="inputContact" class="form-label">Brand Permission</label>
 
-                                    <select name="brandname[]" class="single-select form-control form-select" required id="inputCountry" multiple="multiple">
+                                    <?php
+                                    $userId = $_SESSION['id']; // Get the user ID
 
-                                        <option disabled>Choose....</option>
+                                    if ($_SESSION['role'] === 'Admin') {
+                                    ?>
 
-                                        <?php
-                                        $brands = getBrands($conn);
-                                        foreach ($brands as $brand) {
-                                            echo "<option value='" . $brand['brand_name'] . "'>" . $brand['brand_name'] . "</option>";
-                                        }
-                                        ?>
+                                        <select name="brandname[]" class="single-select form-control form-select" required id="inputCountry" multiple="multiple">
 
-                                    </select>
+                                            <option disabled>Choose....</option>
+
+                                            <?php
+                                            $brands = getBrands($conn);
+                                            foreach ($brands as $brand) {
+                                                echo "<option value='" . $brand['brand_name'] . "'>" . $brand['brand_name'] . "</option>";
+                                            }
+                                            ?>
+
+                                        </select>
+                                    <?php
+                                    } else {
+                                        $brands = getAllowedDisplayBrandsForUser($conn, $userId);
+                                    ?>
+
+                                        <select name="brandname[]" class="single-select form-control form-select" required id="inputCountry" multiple="multiple">
+                                            <option disabled >Choose....</option>
+                                            <?php
+                                            // Populate the select box with the brands
+                                            if (isset($brands) && is_array($brands) && !empty($brands)) {
+                                                foreach ($brands as $brand) {
+                                                    if (isset($brand['brandpermission'])) {
+                                                        echo "<option value='" . htmlspecialchars($brand['brandpermission']) . "'>" . htmlspecialchars($brand['brandpermission']) . "</option>";
+                                                    }
+                                                }
+                                            } else {
+                                                echo "<option disabled>No brands available</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
 
                                 <div class="col-12">
@@ -416,7 +445,7 @@ if (
 
                                     </div>
 
-                                   
+
 
                                 </div>
 
